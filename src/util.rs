@@ -1,6 +1,6 @@
-use crate::javascript::JavaScript;
 use crate::address;
-use crate::address::{XClassicAddress};
+use crate::address::XClassicAddress;
+use crate::javascript::JavaScript;
 use fehler::throws;
 use std::str;
 
@@ -12,9 +12,11 @@ pub fn is_valid_address(jscontext: &mut JavaScript, address: &str) -> bool {
 }
 
 #[throws(_)]
-pub fn encode_classic_address(jscontext: &mut JavaScript, classic_address: &'static str,
-tag: Option<u16>,
-test: Option<bool>,
+pub fn encode_classic_address(
+    jscontext: &mut JavaScript,
+    classic_address: &'static str,
+    tag: Option<u16>,
+    test: Option<bool>,
 ) -> String {
     address::encode_classic_address(jscontext, classic_address, tag, test)?
 }
@@ -57,7 +59,11 @@ mod tests {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
         assert_eq!(
-            is_valid_address(&mut jscontext, "XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi").unwrap(),
+            is_valid_address(
+                &mut jscontext,
+                "XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi"
+            )
+            .unwrap(),
             true
         );
     }
@@ -90,7 +96,11 @@ mod tests {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
         assert_eq!(
-            is_valid_address(&mut jscontext, "XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHI").unwrap(),
+            is_valid_address(
+                &mut jscontext,
+                "XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHI"
+            )
+            .unwrap(),
             false
         );
     }
@@ -100,7 +110,10 @@ mod tests {
     fn test_address_invalid_character() {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        assert_eq!(is_valid_address(&mut jscontext, "rU6K7V3Po4sBBBBBaU@#$%qs2qTQJWDw1").unwrap(), false);
+        assert_eq!(
+            is_valid_address(&mut jscontext, "rU6K7V3Po4sBBBBBaU@#$%qs2qTQJWDw1").unwrap(),
+            false
+        );
     }
 
     #[throws(_)]
@@ -110,7 +123,7 @@ mod tests {
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
         assert_eq!(
             is_valid_address(
-                &mut jscontext, 
+                &mut jscontext,
                 "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1"
             )
             .unwrap(),
@@ -123,7 +136,10 @@ mod tests {
     fn test_address_invalid_too_short() {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        assert_eq!(is_valid_address(&mut jscontext, "rU6K7V3Po4s2qTQJWDw1").unwrap(), false);
+        assert_eq!(
+            is_valid_address(&mut jscontext, "rU6K7V3Po4s2qTQJWDw1").unwrap(),
+            false
+        );
     }
 
     #[throws(_)]
@@ -132,7 +148,13 @@ mod tests {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
         assert_eq!(
-            encode_classic_address(&mut jscontext, "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1", Some(12345), None).unwrap(),
+            encode_classic_address(
+                &mut jscontext,
+                "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1",
+                Some(12345),
+                None
+            )
+            .unwrap(),
             "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT".to_owned()
         );
     }
@@ -143,7 +165,13 @@ mod tests {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
         assert_eq!(
-            encode_classic_address(&mut jscontext, "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1", Some(12345), None).unwrap(),
+            encode_classic_address(
+                &mut jscontext,
+                "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1",
+                Some(12345),
+                None
+            )
+            .unwrap(),
             "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT".to_owned()
         );
     }
@@ -154,7 +182,13 @@ mod tests {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
         assert_eq!(
-            encode_classic_address(&mut jscontext, "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1", None, Some(false)).unwrap(),
+            encode_classic_address(
+                &mut jscontext,
+                "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1",
+                None,
+                Some(false)
+            )
+            .unwrap(),
             "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH".to_owned()
         );
     }
@@ -164,7 +198,8 @@ mod tests {
     fn test_encode_x_address_invalid_address() {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        let x_address = encode_classic_address(&mut jscontext, "xrp", None, Some(false)).unwrap_err();
+        let x_address =
+            encode_classic_address(&mut jscontext, "xrp", None, Some(false)).unwrap_err();
         assert_eq!(
             "Invalid Parameters",
             x_address.downcast_ref::<String>().unwrap()
@@ -182,7 +217,11 @@ mod tests {
             test: false,
         };
         assert_eq!(
-            decode_x_address(&mut jscontext, "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT").unwrap(),
+            decode_x_address(
+                &mut jscontext,
+                "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT"
+            )
+            .unwrap(),
             expected
         );
     }
@@ -198,7 +237,11 @@ mod tests {
             test: true,
         };
         assert_eq!(
-            decode_x_address(&mut jscontext, "TVsBZmcewpEHgajPi1jApLeYnHPJw82v9JNYf7dkGmWphmh").unwrap(),
+            decode_x_address(
+                &mut jscontext,
+                "TVsBZmcewpEHgajPi1jApLeYnHPJw82v9JNYf7dkGmWphmh"
+            )
+            .unwrap(),
             expected
         );
     }
@@ -214,7 +257,11 @@ mod tests {
             test: false,
         };
         assert_eq!(
-            decode_x_address(&mut jscontext, "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH").unwrap(),
+            decode_x_address(
+                &mut jscontext,
+                "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH"
+            )
+            .unwrap(),
             expected
         );
     }
@@ -256,7 +303,11 @@ mod tests {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
         assert_eq!(
-            is_valid_x_address(&mut jscontext, "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT").unwrap(),
+            is_valid_x_address(
+                &mut jscontext,
+                "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT"
+            )
+            .unwrap(),
             true
         );
     }
@@ -277,6 +328,9 @@ mod tests {
     fn test_is_valid_classic_address_with_invalid_classic_address() {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        assert_eq!(is_valid_classic_address(&mut jscontext, "xrp").unwrap(), false);
+        assert_eq!(
+            is_valid_classic_address(&mut jscontext, "xrp").unwrap(),
+            false
+        );
     }
 }

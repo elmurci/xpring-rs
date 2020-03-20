@@ -24,13 +24,13 @@ use anyhow::Error;
 // Private modules
 #[macro_use]
 mod javascript;
-mod transaction;
-mod wallet;
 mod address;
-mod xpring;
 mod config;
-mod xrpclient;
+mod transaction;
 mod util;
+mod wallet;
+mod xpring;
+mod xrpclient;
 mod x {
     tonic::include_proto!("org.xrpl.rpc.v1");
     pub mod prelude {
@@ -41,9 +41,9 @@ mod x {
             GetAccountInfoRequest, GetFeeRequest, GetFeeResponse, GetTransactionRequest,
             GetTransactionResponse, LastLedgerSequence, LedgerRange, Memo, Payment, Sequence,
             Signer, SigningPublicKey, SubmitTransactionRequest, Transaction, TransactionResult,
-            XrpDropsAmount
+            XrpDropsAmount,
         };
     }
 }
 
-pub use crate::xpring::{Xpring};
+pub use crate::xpring::Xpring;

@@ -1,9 +1,9 @@
-use crate::javascript::{JavaScript};
+use crate::address::XClassicAddress;
+use crate::javascript::JavaScript;
+use crate::transaction::XTransactionStatus;
 use crate::util;
-use crate::transaction::{XTransactionStatus};
-use crate::address::{XClassicAddress};
-use crate::xrpclient::{XrpClient, XReliableSendResponse};
-use crate::wallet::{self, XWalletGenerationResult, XWallet};
+use crate::wallet::{self, XWallet, XWalletGenerationResult};
+use crate::xrpclient::{XReliableSendResponse, XrpClient};
 use fehler::throws;
 use std::fs;
 
@@ -19,19 +19,16 @@ fn copy_js_to_exec_path() -> String {
 
 pub struct Xpring {
     pub jscontext: JavaScript,
-    pub xrpclient: XrpClient
+    pub xrpclient: XrpClient,
 }
 
 impl Xpring {
-
-
-
     #[throws(_)]
     pub fn new(xrpclient_url: &'static str) -> Xpring {
         let xpringjs_path = copy_js_to_exec_path()?;
         Xpring {
             jscontext: JavaScript::new(xpringjs_path)?,
-            xrpclient: XrpClient::connect(xrpclient_url)?
+            xrpclient: XrpClient::connect(xrpclient_url)?,
         }
     }
 
@@ -49,7 +46,11 @@ impl Xpring {
     /// Returns a XWalletGenerationResult with the generated wallet
     ///
     #[throws(_)]
-    pub fn generate_random_wallet(&mut self, entropy: Option<String>, test: bool) -> XWalletGenerationResult {
+    pub fn generate_random_wallet(
+        &mut self,
+        entropy: Option<String>,
+        test: bool,
+    ) -> XWalletGenerationResult {
         wallet::generate_random(&mut self.jscontext, entropy, test)?
     }
 
@@ -64,7 +65,12 @@ impl Xpring {
     //
     // Returns a XWallet with the generated wallet
     #[throws(_)]
-    pub fn wallet_from_mnemonic(&mut self, mnemonic: String, derivation_path: Option<String>, test: bool) -> XWallet {
+    pub fn wallet_from_mnemonic(
+        &mut self,
+        mnemonic: String,
+        derivation_path: Option<String>,
+        test: bool,
+    ) -> XWallet {
         wallet::from_mnemonic(&mut self.jscontext, mnemonic, derivation_path, test)?
     }
 
@@ -75,12 +81,17 @@ impl Xpring {
     // * `seed` -  `String` Seed
     // * `derivation_path` - `Option<String>` (Optional) Derivation path
     // * `test` -  `bool` true for TestNet, false for MainNet
-    // 
+    //
     // # Remarks
     //
     // Returns a XWallet with the generated wallet
     #[throws(_)]
-    pub fn wallet_from_seed(&mut self, seed: String, derivation_path: Option<String>, test: bool) -> XWallet {
+    pub fn wallet_from_seed(
+        &mut self,
+        seed: String,
+        derivation_path: Option<String>,
+        test: bool,
+    ) -> XWallet {
         wallet::from_seed(&mut self.jscontext, seed, derivation_path, test)?
     }
 
@@ -90,7 +101,7 @@ impl Xpring {
     //
     // * `message` -  `String` Message to be signed
     // * `private_key` - `String` Private key that will sign the message
-    // 
+    //
     // # Remarks
     //
     // Returns a String with the signed message
@@ -106,12 +117,17 @@ impl Xpring {
     // * `message` -  `String` Message to be signed
     // * `signature` -  `String` Message signature
     // * `public_key` - `String` Signer's public key
-    // 
+    //
     // # Remarks
     //
     // Returns a true if verification is successful, false if not
     #[throws(_)]
-    pub fn wallet_verify(&mut self, message: String, signature: String, public_key: String) -> bool {
+    pub fn wallet_verify(
+        &mut self,
+        message: String,
+        signature: String,
+        public_key: String,
+    ) -> bool {
         wallet::verify(&mut self.jscontext, message, signature, public_key)?
     }
 
@@ -122,7 +138,7 @@ impl Xpring {
     // # Arguments
     //
     // * `address` -  `&str` Address
-    // 
+    //
     // # Remarks
     //
     // Returns a true if verification is successful, false if not
@@ -136,7 +152,7 @@ impl Xpring {
     // # Arguments
     //
     // * `x_address` -  `&str` X-Address
-    // 
+    //
     // # Remarks
     //
     // Returns a true if verification is successful, false if not
@@ -150,7 +166,7 @@ impl Xpring {
     // # Arguments
     //
     // * `address` -  `&str` Classic Address
-    // 
+    //
     // # Remarks
     //
     // Returns a true if verification is successful, false if not
@@ -164,14 +180,17 @@ impl Xpring {
     // # Arguments
     //
     // * `classic_address` -  `&str` Classic Address
-    // 
+    //
     // # Remarks
     //
     // Returns a String with the X-Address
     #[throws(_)]
-    pub fn encode_classic_address(&mut self, classic_address: &'static str,
-    tag: Option<u16>,
-    test: Option<bool>) -> String {
+    pub fn encode_classic_address(
+        &mut self,
+        classic_address: &'static str,
+        tag: Option<u16>,
+        test: Option<bool>,
+    ) -> String {
         util::encode_classic_address(&mut self.jscontext, classic_address, tag, test)?
     }
 
@@ -180,7 +199,7 @@ impl Xpring {
     // # Arguments
     //
     // * `x_address` -  `&str` X-Address
-    // 
+    //
     // # Remarks
     //
     // Returns a XClassicAddress struct
@@ -190,7 +209,7 @@ impl Xpring {
     }
 
     // XrpClient
-    
+
     /// Returns an account balance
     ///
     /// # Arguments
@@ -219,12 +238,20 @@ impl Xpring {
     //
     // Returns a XReliableSendResponse struct
     #[throws(_)]
-    pub fn send(&mut self, amount: f32,
+    pub fn send(
+        &mut self,
+        amount: f32,
         from_x_address: &'static str,
         to_x_address: &'static str,
-        source_wallet: XWallet) -> XReliableSendResponse 
-        {
-        self.xrpclient.send(&mut self.jscontext, amount, from_x_address, to_x_address, source_wallet)?
+        source_wallet: XWallet,
+    ) -> XReliableSendResponse {
+        self.xrpclient.send(
+            &mut self.jscontext,
+            amount,
+            from_x_address,
+            to_x_address,
+            source_wallet,
+        )?
     }
 
     /// Returns a certain transaction status
@@ -241,5 +268,4 @@ impl Xpring {
     pub fn get_transaction_status(&mut self, transaction_hash: &str) -> XTransactionStatus {
         self.xrpclient.get_transaction_status(transaction_hash)?
     }
-
 }

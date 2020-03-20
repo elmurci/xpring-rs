@@ -43,7 +43,6 @@ pub struct JavaScript {
 }
 
 impl JavaScript {
-
     #[throws(_)]
     pub fn new<P: AsRef<Path>>(path: P) -> Self {
         let loopback = Ipv4Addr::new(127, 0, 0, 1);

@@ -1,7 +1,7 @@
-use crate::javascript::JavaScript;
-use crate::transaction;
 use crate::address;
 use crate::config;
+use crate::javascript::JavaScript;
+use crate::transaction;
 use crate::transaction::{XAmount, XPayment, XRawTransactionStatus, XTransactionStatus};
 use crate::wallet::XWallet;
 use crate::x::prelude::*;
@@ -23,7 +23,7 @@ pub struct XReliableSendResponse {
 }
 
 pub(self) fn drops_to_decimal(drops: u64) -> f32 {
-    drops as f32 / 1_000_000.00
+    drops as f32 / 1_000_000.
 }
 
 // The order of the fields in this struct is important. The runtime must be the first field and the
@@ -94,7 +94,11 @@ impl XrpClient {
     }
 
     #[throws(_)]
-    pub(self) fn get_account_sequence(&mut self, jscontext: &mut JavaScript,x_address: &'static str) -> u32 {
+    pub(self) fn get_account_sequence(
+        &mut self,
+        jscontext: &mut JavaScript,
+        x_address: &'static str,
+    ) -> u32 {
         let decoded_address = address::decode_x_address(jscontext, x_address)?;
         let account_info = self.get_account_info(&decoded_address.address)?;
         account_info.sequence.unwrap().value
@@ -191,8 +195,7 @@ impl XrpClient {
         }
         let account_sequence = self.get_account_sequence(jscontext, from_address)?;
         let latest_ledger = self.get_latest_validated_ledger_sequence()?;
-        let last_validated_ledger_sequence =
-            latest_ledger + u32::from(config::MAX_LEDGER_VERSION_OFFSET);
+        let last_validated_ledger_sequence = latest_ledger + config::MAX_LEDGER_VERSION_OFFSET;
         let transaction = transaction::build_payment_transaction(
             payment,
             12,
@@ -201,7 +204,8 @@ impl XrpClient {
             &source_wallet,
         )?;
 
-        let signed_transaction = transaction::sign_transaction(jscontext, &transaction, &source_wallet)?;
+        let signed_transaction =
+            transaction::sign_transaction(jscontext, &transaction, &source_wallet)?;
 
         let request = tonic::Request::new(SubmitTransactionRequest {
             signed_transaction: hex::decode(signed_transaction.result).unwrap(),
@@ -249,7 +253,7 @@ impl XrpClient {
 mod tests {
 
     use super::*;
- 
+
     pub const DEFAULT_SERVER_URL: &str = "http://test.xrp.xpring.io:50051";
 
     #[throws(_)]
@@ -296,7 +300,10 @@ mod tests {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
         let response = client
-            .get_balance(&mut jscontext, "TVr7v7JGN5suv7Zgdu9aL4PtCkwayZNYWvjSG23uMMWMvzZ")
+            .get_balance(
+                &mut jscontext,
+                "TVr7v7JGN5suv7Zgdu9aL4PtCkwayZNYWvjSG23uMMWMvzZ",
+            )
             .unwrap();
         assert_eq!(response, 1000.00);
     }

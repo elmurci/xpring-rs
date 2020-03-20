@@ -1,4 +1,4 @@
-use crate::javascript::{JsCall, JavaScript};
+use crate::javascript::{JavaScript, JsCall};
 use fehler::throws;
 use serde::{Deserialize, Serialize};
 
@@ -71,10 +71,6 @@ impl XWallet {
             address: None,
         }
     }
-    pub fn address<'a>(&'a mut self, address: String) -> &'a mut XWallet {
-        self.address = Some(address);
-        self
-    }
 }
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
@@ -95,7 +91,7 @@ impl XVerifyOptions {
         XVerifyOptions {
             message: hex::encode(message),
             signature,
-            public_key
+            public_key,
         }
     }
 }
@@ -110,10 +106,14 @@ pub struct XWalletGenerationResult {
 }
 
 #[throws(_)]
-pub fn generate_random(jscontext: &mut JavaScript, entropy: Option<String>, test: bool) -> XWalletGenerationResult {
+pub fn generate_random(
+    jscontext: &mut JavaScript,
+    entropy: Option<String>,
+    test: bool,
+) -> XWalletGenerationResult {
     let mut options = XGenerateWalletOptions::new(test);
-    if !entropy.is_none() {
-        options.entropy(entropy.unwrap());
+    if let Some(e) = entropy {
+        options.entropy(e);
     }
     let result = js!(jscontext
         .wallet
@@ -122,11 +122,16 @@ pub fn generate_random(jscontext: &mut JavaScript, entropy: Option<String>, test
 }
 
 #[throws(_)]
-pub fn from_mnemonic(jscontext: &mut JavaScript, mnemonic: String, derivation_path: Option<String>, test: bool) -> XWallet {
+pub fn from_mnemonic(
+    jscontext: &mut JavaScript,
+    mnemonic: String,
+    derivation_path: Option<String>,
+    test: bool,
+) -> XWallet {
     let mut options = XGenerateWalletOptions::new(test);
     options.mnemonic(mnemonic);
-    if !derivation_path.is_none() {
-        options.derivation_path(derivation_path.unwrap());
+    if let Some(d) = derivation_path {
+        options.derivation_path(d);
     }
     let result = js!(jscontext
         .wallet
@@ -135,15 +140,18 @@ pub fn from_mnemonic(jscontext: &mut JavaScript, mnemonic: String, derivation_pa
 }
 
 #[throws(_)]
-pub fn from_seed(jscontext: &mut JavaScript, seed: String, derivation_path: Option<String>, test: bool) -> XWallet {
+pub fn from_seed(
+    jscontext: &mut JavaScript,
+    seed: String,
+    derivation_path: Option<String>,
+    test: bool,
+) -> XWallet {
     let mut options = XGenerateWalletOptions::new(test);
     options.seed(seed);
-    if !derivation_path.is_none() {
-        options.derivation_path(derivation_path.unwrap());
+    if let Some(d) = derivation_path {
+        options.derivation_path(d);
     }
-    let result = js!(jscontext
-        .wallet
-        .generateWalletFromSeed::<XWallet>(options))?;
+    let result = js!(jscontext.wallet.generateWalletFromSeed::<XWallet>(options))?;
     result
 }
 
@@ -158,12 +166,13 @@ pub fn sign(jscontext: &mut JavaScript, message: String, private_key: String) ->
 }
 
 #[throws(_)]
-pub fn verify(jscontext: &mut JavaScript, message: String, signature: String, public_key: String) -> bool {
-    let verify_options = XVerifyOptions::new(
-        message,
-        signature,
-        public_key
-    );
+pub fn verify(
+    jscontext: &mut JavaScript,
+    message: String,
+    signature: String,
+    public_key: String,
+) -> bool {
+    let verify_options = XVerifyOptions::new(message, signature, public_key);
     let result = js!(jscontext.wallet.verify::<bool>(verify_options))?;
     result
 }
@@ -188,7 +197,11 @@ mod tests {
     fn test_random_wallet_with_entropy_testnet() {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        let wallet = generate_random(&mut jscontext, Some("00000000000000000000000000000000".to_owned()), true)?;
+        let wallet = generate_random(
+            &mut jscontext,
+            Some("00000000000000000000000000000000".to_owned()),
+            true,
+        )?;
         assert_eq!(wallet.mnemonic, "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about");
     }
 
@@ -216,7 +229,12 @@ mod tests {
         };
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        let wallet = generate_random(&mut jscontext, Some("00000000000000000000000000000000".to_owned()), true).unwrap();
+        let wallet = generate_random(
+            &mut jscontext,
+            Some("00000000000000000000000000000000".to_owned()),
+            true,
+        )
+        .unwrap();
         assert_eq!(wallet, expected);
     }
 
@@ -235,7 +253,11 @@ mod tests {
         };
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        let wallet = generate_random(&mut jscontext, Some("00000000000000000000000000000000".to_owned()), false)?;
+        let wallet = generate_random(
+            &mut jscontext,
+            Some("00000000000000000000000000000000".to_owned()),
+            false,
+        )?;
         assert_eq!(wallet, expected);
     }
 
@@ -254,7 +276,12 @@ mod tests {
         };
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        let wallet = generate_random(&mut jscontext, Some("00000000000000000000000000000000".to_owned()), true).unwrap();
+        let wallet = generate_random(
+            &mut jscontext,
+            Some("00000000000000000000000000000000".to_owned()),
+            true,
+        )
+        .unwrap();
         assert_eq!(wallet, expected);
     }
 
@@ -377,8 +404,16 @@ mod tests {
     fn test_from_seed_without_derivation_path_mainnet() {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        let wallet = from_seed(&mut jscontext, "snYP7oArxKepd3GPDcrjMsJYiJeJB".to_owned(), None, false)?;
-        assert_eq!(wallet.address.unwrap(), "XVnJMYQFqA8EAijpKh5EdjEY5JqyxykMKKSbrUX8uchF6U8");
+        let wallet = from_seed(
+            &mut jscontext,
+            "snYP7oArxKepd3GPDcrjMsJYiJeJB".to_owned(),
+            None,
+            false,
+        )?;
+        assert_eq!(
+            wallet.address.unwrap(),
+            "XVnJMYQFqA8EAijpKh5EdjEY5JqyxykMKKSbrUX8uchF6U8"
+        );
     }
 
     #[throws(_)]
@@ -386,8 +421,16 @@ mod tests {
     fn test_from_seed_with_derivation_path_maintnet() {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        let wallet = from_seed(&mut jscontext, "snYP7oArxKepd3GPDcrjMsJYiJeJB".to_owned(), Some("m/44'/144'/0'/0/1".to_owned()), false)?;
-        assert_eq!(wallet.address.unwrap(), "XVnJMYQFqA8EAijpKh5EdjEY5JqyxykMKKSbrUX8uchF6U8");
+        let wallet = from_seed(
+            &mut jscontext,
+            "snYP7oArxKepd3GPDcrjMsJYiJeJB".to_owned(),
+            Some("m/44'/144'/0'/0/1".to_owned()),
+            false,
+        )?;
+        assert_eq!(
+            wallet.address.unwrap(),
+            "XVnJMYQFqA8EAijpKh5EdjEY5JqyxykMKKSbrUX8uchF6U8"
+        );
     }
 
     #[throws(_)]
@@ -404,7 +447,13 @@ mod tests {
     fn test_generate_wallet_from_seed_mainnet() {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        let wallet = from_seed(&mut jscontext, "snYP7oArxKepd3GPDcrjMsJYiJeJB".to_owned(), None, false).unwrap();
+        let wallet = from_seed(
+            &mut jscontext,
+            "snYP7oArxKepd3GPDcrjMsJYiJeJB".to_owned(),
+            None,
+            false,
+        )
+        .unwrap();
         assert_eq!(
             wallet.address.unwrap(),
             "XVnJMYQFqA8EAijpKh5EdjEY5JqyxykMKKSbrUX8uchF6U8"
@@ -416,7 +465,13 @@ mod tests {
     fn test_generate_wallet_from_seed_testnet() {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        let wallet = from_seed(&mut jscontext, "snYP7oArxKepd3GPDcrjMsJYiJeJB".to_owned(), None, true).unwrap();
+        let wallet = from_seed(
+            &mut jscontext,
+            "snYP7oArxKepd3GPDcrjMsJYiJeJB".to_owned(),
+            None,
+            true,
+        )
+        .unwrap();
         assert_eq!(
             wallet.address.unwrap(),
             "T7zFmeZo6uLHP4Vd21TpXjrTBk487ZQPGVQsJ1mKWGCD5rq"
@@ -439,7 +494,12 @@ mod tests {
         let expected_signature = "304402204146402099809E1F021421569F72BA34DCAFCC832741AB6310F887F60734D9F002203E813AD6A59D67D8EE06C8EA05BCC1BA8F690B631E6F243E8BE60633D27BE05D";
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        let signed_message = sign(&mut jscontext, message, "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389".to_owned()).unwrap();
+        let signed_message = sign(
+            &mut jscontext,
+            message,
+            "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389".to_owned(),
+        )
+        .unwrap();
         assert_eq!(expected_signature, signed_message);
     }
 
@@ -450,7 +510,12 @@ mod tests {
         let signature = "304402204146402099809E1F021421569F72BA34DCAFCC832741AB6310F887F60734D9F002203E813AD6A59D67D8EE06C8EA05BCC1BA8F690B631E6F243E8BE60633D27BE05D".to_owned();
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        let verified_message = verify(&mut jscontext, message, signature, "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89".to_owned())?;
+        let verified_message = verify(
+            &mut jscontext,
+            message,
+            signature,
+            "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89".to_owned(),
+        )?;
         assert!(verified_message);
     }
 
@@ -461,7 +526,12 @@ mod tests {
         let signature = "DEADBEEF".to_owned();
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        let verified_message = verify(&mut jscontext, message, signature, "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89".to_owned())?;
+        let verified_message = verify(
+            &mut jscontext,
+            message,
+            signature,
+            "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89".to_owned(),
+        )?;
         assert!(!verified_message);
     }
 
@@ -472,7 +542,12 @@ mod tests {
         let signature = "xrp".to_owned();
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        let verified_message = verify(&mut jscontext, message, signature, "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89".to_owned())?;
+        let verified_message = verify(
+            &mut jscontext,
+            message,
+            signature,
+            "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89".to_owned(),
+        )?;
         assert!(!verified_message);
     }
 
@@ -481,8 +556,18 @@ mod tests {
     fn test_signs_and_verifies_empty_message() {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        let signed_message = sign(&mut jscontext, "".to_owned(), "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389".to_owned()).unwrap();
-        let verified_message = verify(&mut jscontext, "".to_owned(), signed_message, "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89".to_owned())?;
+        let signed_message = sign(
+            &mut jscontext,
+            "".to_owned(),
+            "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389".to_owned(),
+        )
+        .unwrap();
+        let verified_message = verify(
+            &mut jscontext,
+            "".to_owned(),
+            signed_message,
+            "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89".to_owned(),
+        )?;
         assert!(verified_message);
     }
 
@@ -491,7 +576,12 @@ mod tests {
     fn test_fails_to_verify_a_bad_signature_on_an_empty_string() {
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        let verified_message = verify(&mut jscontext, "".to_owned(), "DEADBEEF".to_owned(), "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89".to_owned())?;
+        let verified_message = verify(
+            &mut jscontext,
+            "".to_owned(),
+            "DEADBEEF".to_owned(),
+            "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89".to_owned(),
+        )?;
         assert!(!verified_message);
     }
 }

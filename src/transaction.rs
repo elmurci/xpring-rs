@@ -36,7 +36,7 @@ pub struct XRawTransactionStatus {
 
 impl XAmount {
     pub fn new(amount: f32) -> XAmount {
-        let drops = amount * 1_000_000.00;
+        let drops = amount * 1_000_000.;
         XAmount {
             drops: drops as u64,
         }
@@ -118,7 +118,11 @@ pub(crate) fn zero_vector<T>() -> Vec<T> {
 }
 
 #[throws(_)]
-pub(crate) fn sign_transaction(jscontext: &mut JavaScript, transaction: &Transaction, wallet: &XWallet) -> XSignedTransaction {
+pub(crate) fn sign_transaction(
+    jscontext: &mut JavaScript,
+    transaction: &Transaction,
+    wallet: &XWallet,
+) -> XSignedTransaction {
     let trx = serialize_transaction(transaction)?;
     let result = js!(jscontext
         .signer
@@ -196,7 +200,7 @@ mod tests {
         let raw_status = XRawTransactionStatus {
             transaction_result: TransactionResult {
                 result_type: 6,
-                result: "tesSuccess".to_owned()
+                result: "tesSuccess".to_owned(),
             },
             last_ledger_sequence: 11239,
             validated: true,
@@ -210,7 +214,7 @@ mod tests {
         let raw_status = XRawTransactionStatus {
             transaction_result: TransactionResult {
                 result_type: 6,
-                result: "tefAlready".to_owned()
+                result: "tefAlready".to_owned(),
             },
             last_ledger_sequence: 11239,
             validated: true,
@@ -224,7 +228,7 @@ mod tests {
         let raw_status = XRawTransactionStatus {
             transaction_result: TransactionResult {
                 result_type: 6,
-                result: "tesSuccess".to_owned()
+                result: "tesSuccess".to_owned(),
             },
             last_ledger_sequence: 11239,
             validated: false,
@@ -298,5 +302,4 @@ mod tests {
         let signed_transaction = sign_transaction(&mut jscontext, &t, &w)?;
         assert_eq!(signed_transaction.result, "120000240000000B2E0000000D201B004E75D861400000000000000A68400000000000000A73210314ACE51F9B116BCF3C1E38A9BD92706AF4334165870139144E947B27BB0103E87447304502210093C4587DA120D86CFA76E8D87DFA35CE587013AAC7680D334C0CEC11741D7E9A022068CB5EED93624D3114ACF7DAB6C47EFEA1474E9BD0FE49E0B0D4FCE5A233586F81144594AF4CCC84B8E0AE58E6465F0BE056F0F70392831405EEB009A9DAE7DFBBB13523EA5CAB0B9B4B2E99".to_owned());
     }
-
 }

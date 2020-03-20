@@ -7,7 +7,7 @@ xpring-rs is a Rust client-side library that:
 
 ## Architecture
 
-![alt text](architecture.png "xRs Architecture")
+![alt text](architecture.png "xpring-rs Architecture")
 
 ## Features
 

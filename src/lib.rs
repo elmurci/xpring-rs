@@ -1,24 +1,10 @@
-// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
-// https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
-// <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your
-// option. This file may not be copied, modified, or distributed
-// except according to those terms.
-
-//! xRs
+//! # reqwest
 //!
-//! xRs is a Rust client-side library that:
+//! xpring-rs is a Rust client-side library that:
+//! 
 //! - Performs some offline calculations around XRP Ledger wallet generation/derivation
 //! - Provides an easy interface to interact with the XRP Ledger.
-//!
-//! # Details
-//!
-//! xRs provides the following features:
-//!
-//! - Wallet generation and derivation (Seed-based or HD Wallet-based)
-//! - Address validation
-//! - Account balance retrieval
-//! - Sending XRP payments
-
+//! 
 use anyhow::Error;
 
 // Private modules

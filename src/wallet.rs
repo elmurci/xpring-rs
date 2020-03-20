@@ -2,7 +2,6 @@ use crate::javascript::{JavaScript, JsCall};
 use fehler::throws;
 use serde::{Deserialize, Serialize};
 
-// Everything that gets passed to JavaScript needs to derive Serialize.
 #[derive(Debug, Serialize)]
 pub struct XGenerateWalletOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -51,7 +50,6 @@ impl<'a> XGenerateWalletOptions {
     }
 }
 
-// Everything that gets returned by JavaScript needs to derive Deserialize.
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 pub struct XWallet {
     #[serde(rename(deserialize = "publicKey"))]
@@ -96,7 +94,6 @@ impl XVerifyOptions {
     }
 }
 
-// Everything that gets returned by JavaScript needs to derive Deserialize.
 #[derive(PartialEq, Debug, Deserialize)]
 pub struct XWalletGenerationResult {
     wallet: XWallet,

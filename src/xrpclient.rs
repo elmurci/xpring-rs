@@ -84,10 +84,10 @@ impl XrpClient {
             account: Some(AccountAddress {
                 address: address.to_owned(),
             }),
-            signer_lists: false, //TODO What is this
-            strict: false,       //TODO What is this
-            ledger: None,        //TODO What is this
-            queue: false,        //TODO What is this
+            signer_lists: false, //TODO
+            strict: false,       //TODO
+            ledger: None,        //TODO
+            queue: false,        //TODO
         });
         let response = self.rt.block_on(self.client.get_account_info(request))?;
         response.into_inner().account_data.unwrap()
@@ -122,12 +122,6 @@ impl XrpClient {
         &mut self,
         transaction_hash: Vec<u8>,
     ) -> GetTransactionResponse {
-        // hash of the transaction. 32 bytes
-        // ATTN: this is in binary, not hex. The JSON API accepts a hex string for
-        // a transaction hash, but here we need that hex string converted into its
-        // binary form. Each pair of hex characters should be converted into its
-        // corresponding byte. For example, the 4 character hex string "00FF"
-        // should be converted to a 2 byte array: [0, 255]
         let request = tonic::Request::new(GetTransactionRequest {
             hash: transaction_hash,
             binary: false,

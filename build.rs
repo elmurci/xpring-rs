@@ -1,4 +1,4 @@
-use std::{fs, io};
+use std::{fs};
 
 fn main() {
     let out_dir = std::env::var("OUT_DIR").unwrap();

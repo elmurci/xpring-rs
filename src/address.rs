@@ -2,7 +2,6 @@ use crate::javascript::{JavaScript, JsCall};
 use fehler::throws;
 use serde::{Deserialize, Serialize};
 
-// Everything that gets passed to JavaScript needs to derive Serialize.
 #[derive(Debug, Serialize)]
 struct XAddressOptions {
     #[serde(skip_serializing_if = "Option::is_none")]

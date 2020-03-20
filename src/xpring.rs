@@ -117,21 +117,57 @@ impl Xpring {
 
     // Util
 
+    // Validates an address (X or Classic)
+    //
+    // # Arguments
+    //
+    // * `address` -  `&str` Address
+    // 
+    // # Remarks
+    //
+    // Returns a true if verification is successful, false if not
     #[throws(_)]
     pub fn validate_address(&mut self, address: &str) -> bool {
         util::is_valid_address(&mut self.jscontext, address)?
     }
 
+    // Validates an X-Address
+    //
+    // # Arguments
+    //
+    // * `x_address` -  `&str` X-Address
+    // 
+    // # Remarks
+    //
+    // Returns a true if verification is successful, false if not
     #[throws(_)]
     pub fn validate_x_address(&mut self, x_address: &'static str) -> bool {
         util::is_valid_x_address(&mut self.jscontext, x_address)?
     }
 
+    // Validates a Classic Address
+    //
+    // # Arguments
+    //
+    // * `address` -  `&str` Classic Address
+    // 
+    // # Remarks
+    //
+    // Returns a true if verification is successful, false if not
     #[throws(_)]
-    pub fn validate_classic_address(&mut self, address: &'static str) -> bool {
-        util::is_valid_classic_address(&mut self.jscontext, address)?
+    pub fn validate_classic_address(&mut self, classic_address: &'static str) -> bool {
+        util::is_valid_classic_address(&mut self.jscontext, classic_address)?
     }
 
+    // Encodes a Classic Address into a X-Address
+    //
+    // # Arguments
+    //
+    // * `classic_address` -  `&str` Classic Address
+    // 
+    // # Remarks
+    //
+    // Returns a String with the X-Address
     #[throws(_)]
     pub fn encode_classic_address(&mut self, classic_address: &'static str,
     tag: Option<u16>,
@@ -139,6 +175,15 @@ impl Xpring {
         util::encode_classic_address(&mut self.jscontext, classic_address, tag, test)?
     }
 
+    // Decodes a X-Address into a Classic Address
+    //
+    // # Arguments
+    //
+    // * `x_address` -  `&str` X-Address
+    // 
+    // # Remarks
+    //
+    // Returns a XClassicAddress struct
     #[throws(_)]
     pub fn decode_x_address(&mut self, x_address: &'static str) -> XClassicAddress {
         util::decode_x_address(&mut self.jscontext, x_address)?
@@ -146,11 +191,33 @@ impl Xpring {
 
     // XrpClient
     
+    /// Returns an account balance
+    ///
+    /// # Arguments
+    ///
+    /// * `address` -  `&'static str` Account in x format
+    ///
+    /// # Remarks
+    ///
+    /// Returns a string f32 with the balance in decimal format
+    ///
     #[throws(_)]
     pub fn get_balance(&mut self, x_address: &'static str) -> f32 {
         self.xrpclient.get_balance(&mut self.jscontext, x_address)?
     }
 
+    // Sends a payment from one account to another
+    //
+    // # Arguments
+    //
+    // * `amount` -  `f32` Payment amount in decimal format (Ex. 10.32)
+    // * `from_address` -  `&'static str` Origin account in x format
+    // * `to_address` -  `&'static str` Destination account in x format
+    // * `source_wallet` -  `XWallet` Wallet that will fund the payment and sign the transaction
+    //
+    // # Remarks
+    //
+    // Returns a XReliableSendResponse struct
     #[throws(_)]
     pub fn send(&mut self, amount: f32,
         from_x_address: &'static str,
@@ -160,6 +227,16 @@ impl Xpring {
         self.xrpclient.send(&mut self.jscontext, amount, from_x_address, to_x_address, source_wallet)?
     }
 
+    /// Returns a certain transaction status
+    ///
+    /// # Arguments
+    ///
+    /// * `transaction_hash` -  `&str` Transaction hash
+    ///
+    /// # Remarks
+    ///
+    /// Returns a transaction status (XTransactionStatus)
+    ///
     #[throws(_)]
     pub fn get_transaction_status(&mut self, transaction_hash: &str) -> XTransactionStatus {
         self.xrpclient.get_transaction_status(transaction_hash)?

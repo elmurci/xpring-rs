@@ -1,6 +1,6 @@
 use fehler::throws;
 use anyhow::Error;
-use xrs::{Xpring};
+use xpring_rs::{Xpring};
 
 #[throws(_)]
 fn main() {

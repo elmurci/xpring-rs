@@ -58,12 +58,6 @@ impl XrpClient {
         response.into_inner()
     }
 
-    /// Gets the current base fee
-    ///
-    /// # Remarks
-    ///
-    /// Returns a u64 with the fee in drops
-    ///
     #[throws(_)]
     #[allow(dead_code)]
     pub(self) fn get_base_fee(&mut self) -> u64 {
@@ -71,12 +65,6 @@ impl XrpClient {
         fees.fee.unwrap().base_fee.unwrap().drops
     }
 
-    /// Gets the current open ledger fee
-    ///
-    /// # Remarks
-    ///
-    /// Returns a u64 with the fee in drops
-    ///
     #[throws(_)]
     #[allow(dead_code)]
     pub(self) fn get_open_ledger_fee(&mut self) -> u64 {
@@ -84,12 +72,6 @@ impl XrpClient {
         fees.fee.unwrap().open_ledger_fee.unwrap().drops
     }
 
-    /// Gets the current validated ledger sequence
-    ///
-    /// # Remarks
-    ///
-    /// Returns a u32 with the sequence
-    ///
     #[throws(_)]
     pub(self) fn get_latest_validated_ledger_sequence(&mut self) -> u32 {
         let fees = self.get_fees()?;
@@ -118,16 +100,6 @@ impl XrpClient {
         account_info.sequence.unwrap().value
     }
 
-    /// Returns an account balance
-    ///
-    /// # Arguments
-    ///
-    /// * `address` -  `&'static str` Account in x format
-    ///
-    /// # Remarks
-    ///
-    /// Returns a string f32 with the balance in decimal format
-    ///
     #[throws(_)]
     pub fn get_balance(&mut self, jscontext: &mut JavaScript, x_address: &'static str) -> f32 {
         let decoded_address = address::decode_x_address(jscontext, x_address)?;
@@ -191,34 +163,12 @@ impl XrpClient {
         }
     }
 
-    /// Returns a certain transaction status
-    ///
-    /// # Arguments
-    ///
-    /// * `transaction_hash` -  `&str` Transaction hash
-    ///
-    /// # Remarks
-    ///
-    /// Returns a transaction status (enum)
-    ///
     #[throws(_)]
     pub fn get_transaction_status(&mut self, transaction_hash: &str) -> XTransactionStatus {
         let transaction_status = self.get_raw_transaction_status(transaction_hash)?;
         transaction::from_raw_status(transaction_status)
     }
 
-    // Sends a payment from one account to another
-    //
-    // # Arguments
-    //
-    // * `amount` -  `f32` Payment amount in decimal format (Ex. 10.32)
-    // * `from_address` -  `&'static str` Origin account in x format
-    // * `to_address` -  `&'static str` Destination account in x format
-    // * `source_wallet` -  `XWallet` Wallet that will fund the payment and sign the transaction
-    //
-    // # Remarks
-    //
-    // Returns a transaction status (enum)
     #[throws(_)]
     pub fn send(
         &mut self,

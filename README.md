@@ -1,6 +1,7 @@
 # xpring-rs
 
 xpring-rs is a Rust client-side library that:
+
 - Performs some offline calculations around XRP Ledger wallet generation/derivation
 - Provides an easy interface to interact with the XRP Ledger.
 
@@ -10,7 +11,7 @@ xpring-rs is a Rust client-side library that:
 
 ## Features
 
-xRs provides the following features:
+xpring-rs provides the following features:
 
 - Wallet generation and derivation (Seed-based or HD Wallet-based)
 - Address validation
@@ -53,7 +54,7 @@ xpring-rs can derive a wallet from a seed or it can derive a hierarchical determ
 A hierarchical deterministic wallet is created using a mnemonic and a derivation path. Simply pass the mnemonic and derivation path to the wallet generation function. Note that you omit passing a derivation path and have a default path be used instead.
 
 ```rust
-use xpring-rs::{Xpring};
+use xpring_rs::{Xpring};
 
 ...
 

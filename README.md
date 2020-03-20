@@ -1,6 +1,6 @@
-# xRs
+# xpring-rs
 
-xRs is a Rust client-side library that:
+xpring-rs is a Rust client-side library that:
 - Performs some offline calculations around XRP Ledger wallet generation/derivation
 - Provides an easy interface to interact with the XRP Ledger.
 
@@ -27,7 +27,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-xrs = "0.1"
+xpring-rs = "0.1"
 ```
 
 ## Usage
@@ -46,25 +46,24 @@ Wallets can be derived from either a seed or a mnemonic and derivation path. You
 
 #### Wallet Derivation
 
-xRs can derive a wallet from a seed or it can derive a hierarchical deterministic wallet (HD Wallet) from a mnemonic and derivation path.
+xpring-rs can derive a wallet from a seed or it can derive a hierarchical deterministic wallet (HD Wallet) from a mnemonic and derivation path.
 
 ##### Hierarchical Deterministic Wallets
 
 A hierarchical deterministic wallet is created using a mnemonic and a derivation path. Simply pass the mnemonic and derivation path to the wallet generation function. Note that you omit passing a derivation path and have a default path be used instead.
 
 ```rust
-use xrs::{Wallet};
+use xpring-rs::{Xpring};
 
 ...
 
-let mut wallet = Wallet::new()?;
-let mnemonic: "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
 
 // With mnemonic and default derivation path
-let wallet = wallet.from_mnemonic(mnemonic, None, false).unwrap();
+let wallet_from_mnemonic = xpring.wallet_from_mnemonic("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about".to_owned(), None, true)?;
 
 // With mnemonic and custom derivation path
-let wallet = wallet.from_mnemonic(mnemonic, Some("m/44'/144'/0'/0/1".to_owned()), false).unwrap();
+let wallet_from_mnemonic = xpring.wallet_from_mnemonic("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about".to_owned(), Some("m/44'/144'/0'/0/1".to_owned()), true)?;
 ```
 
 ##### Seed-Based Wallets
@@ -72,12 +71,7 @@ let wallet = wallet.from_mnemonic(mnemonic, Some("m/44'/144'/0'/0/1".to_owned())
 You can construct a seed based wallet by passing a base58check encoded seed string.
 
 ```rust
-use xrs::{Wallet};
-
-...
-
-let mut wallet = Wallet::new()?;
-let wallet = wallet.from_seed("snRiAJGeKCkPVddbjB3zRwwoiYDBm1M", None, true)?;
+let wallet_from_seed = xpring.wallet_from_seed("snYP7oArxKepd3GPDcrjMsJYiJeJB".to_owned(), None, true)?;
 // XWalletGenerationResult { wallet: 
 //   XWallet 
 //     { 
@@ -92,7 +86,7 @@ let wallet = wallet.from_seed("snRiAJGeKCkPVddbjB3zRwwoiYDBm1M", None, true)?;
 
 #### Wallet Generation
 
-xRs can generate a new and random HD Wallet. The result of a wallet generation call is a `XWalletGenerationResult` struct which contains the following:
+xpring-rs can generate a new and random HD Wallet. The result of a wallet generation call is a `XWalletGenerationResult` struct which contains the following:
 
 - A randomly generated mnemonic
 - The derivation path used, which is the default path
@@ -100,15 +94,9 @@ xRs can generate a new and random HD Wallet. The result of a wallet generation c
 
 
 ```rust
-use xrs::{wallet};
-
-...
-
-let mut wallet = Wallet::new()?;
-
 // Generate a random wallet.
-let wallet = wallet.random_wallet(None, true).unwrap(); //no entropy and testnet 
-let wallet = wallet.random_wallet("00000000000000000000000000000000".to_owned(), false).unwrap(); //entropy and mainnet 
+let random_wallet = xpring.generate_random_wallet(None, false)?; //no entropy and testnet 
+let random_wallet_with_entropy = xpring.generate_random_wallet("00000000000000000000000000000000".to_owned(), false)?; //entropy and mainnet 
 
 // XWalletGenerationResult { wallet: 
 //   XWallet 
@@ -128,16 +116,7 @@ let wallet = wallet.random_wallet("00000000000000000000000000000000".to_owned(),
 A generated wallet can provide its public key, private key, and address on the XRP ledger.
 
 ```rust
-use xrs::{Wallet};
-
-...
-
-let mut wallet = Wallet::new()?;
-let wallet = wallet.from_mnemonic(
-    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about".to_owned(),
-    None,
-    true
-).unwrap();
+let wallet_from_mnemonic = xpring.wallet_from_mnemonic("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about".to_owned(), Some("m/44'/144'/0'/0/1".to_owned()), false)?;
 
 println!("Address: {}", wallet.address); //XVMFQQBMhdouRqhPMuawgBMN1AVFTofPAdRsXG5RkPtUPNQ
 println!("Public Key: {}", wallet.publicKey); //031D68BC1A142E6766B2BDFB006CCFE135EF2E0E2E94ABB5CF5C9AB6104776FBAE
@@ -153,49 +132,33 @@ use xrs::{Wallet};
 
 ...
 
-let mut wallet = Wallet::new()?;
-let signed_message = wallet.sign(
-    "test message".to_owned(),
+let signed_message = xpring.wallet_sign(
+    "mymessage".to_owned(), 
     "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389".to_owned()
-).unwrap();
+    ).unwrap();
 
-println!("Signed Message: {}", signed_message); //304402204146402099809E1F021421569F72BA34DCAFCC832741AB6310F887F60734D9F002203E813AD6A59D67D8EE06C8EA05BCC1BA8F690B631E6F243E8BE60633D27BE05D
+println!("Signed Message: {:?}", signed_message); //304402204146402099809E1F021421569F72BA34DCAFCC832741AB6310F887F60734D9F002203E813AD6A59D67D8EE06C8EA05BCC1BA8F690B631E6F243E8BE60633D27BE05D
 
 ...
 
-let verified_message = wallet.verify(
-    message,
-    signed_message,
+let verified_message = xpring.wallet_verify(
+    "mymessage".to_owned(), 
+    "3045022100DD88E31FF9AFD2A6DA48D40C4B4E8F11725E11C9D9E52388710E35ED19212EF6022068CFA9C09071322751C11DD21E89088879DC28B3B683D3F863090FB7C331EC32".to_owned(), 
     "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89".to_owned()
-)?;
+).unwrap();
 // true
-```
-
-### XpringClient
-
-```rust
-use xrs::{XrpClient};
-
-...
-
-let client = XrpClient::connect("test.xrp.xpring.io:50051")?;
 ```
 
 #### Retrieving a Balance
 
 ```rust
-use xrs::{XrpClient};
-
-...
-
-let client = XrpClient::connect("http://test.xrp.xpring.io:50051")?;
-let response = client.get_balance("T7jkn8zYC2NhPdcbVxkiEXZGy56YiEE4P7uXRgpy5j4Q6S1")?;
+let balance = xpring.get_balance("TVr7v7JGN5suv7Zgdu9aL4PtCkwayZNYWvjSG23uMMWMvzZ")?;
 //1000.00
 ```
 
 ### Checking Transaction Status
 
-An `XrpClient` can check the status of an transaction on the XRP Ledger.
+An `Xpring` instance can check the status of an transaction on the XRP Ledger.
 
 xRs returns the following transaction states:
 - `SUCCEEDED`: The transaction was successfully validated and applied to the XRP Ledger.
@@ -208,12 +171,7 @@ xRs returns the following transaction states:
 These states are determined by the `XTransactionStatus` enum.
 
 ```rust
-use xrs::{XrpClient};
-
-...
-
-let mut client = XrpClient::connect("http://test.xrp.xpring.io:50051")?;
-let status = client.get_transaction_status("4DBA25199653A2E8BC5879DF2F830DA0149D9DE5216D2A4496A59505C107D6BB")?;
+let status = xpring.get_transaction_status("4DBA25199653A2E8BC5879DF2F830DA0149D9DE5216D2A4496A59505C107D6BB")?;
 //SUCCEEDED
 ```
 
@@ -226,11 +184,6 @@ An `XRPClient` can send XRP to other [accounts](https://xrpl.org/accounts.html) 
 **Note:** The payment operation will block the calling thread until the operation reaches a definitive and irreversible success or failure state.
 
 ```rust
-use xrs::{XrpClient, Wallet};
-
-...
-
-let mut client = XrpClient::connect("http://test.xrp.xpring.io:50051")?;
 let w = wallet.from_seed(
     "shKtxFAYfNUHYayYMYkp3KjQQX2UY".to_owned(),
     None,
@@ -252,24 +205,17 @@ let response = client.send(12.12, "T7jkn8zYC2NhPdcbVxkiEXZGy56YiEE4P7uXRgpy5j4Q6
 use xrs::{Util};
 
 ...
-
-let mut util = Util::new()?;
-
-util.is_valid_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1")?; // returns true
-util.is_valid_address("XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi")?; // returns true
-util.is_valid_address("1DiqLtKZZviDxccRpowkhVowsbLSNQWBE8")?; // returns false
+xpring.validate_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1")?; // returns true
+xpring.validate_address("XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi")?; // returns true
+xpring.validate_address("1DiqLtKZZviDxccRpowkhVowsbLSNQWBE8")?; // returns false
 ```
 
 You can also validate if an address is an X-Address or a classic address.
 
 ```rust
-use xrs::{Util};
-
-...
-
-util.is_valid_x_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1")?; // returns false
-util.is_valid_x_address("XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi")?; // returns true
-util.is_valid_x_address("1DiqLtKZZviDxccRpowkhVowsbLSNQWBE8")?; // returns false
+xpring.validate_x_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1")?; // returns false
+xpring.validate_x_address("XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi")?; // returns true
+xpring.validate_x_address("1DiqLtKZZviDxccRpowkhVowsbLSNQWBE8")?; // returns false
 ```
 
 ```rust
@@ -277,23 +223,19 @@ use xrs::{address};
 
 ...
 
-util.is_valid_classic_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1")?; // returns true
-util.is_valid_classic_address("XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi")?; // returns false
-address::util.```
+xpring.validate_classic_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1")?; // returns true
+xpring.validate_classic_address("XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi")?; // returns false
+```
 
 ### X-Address Encoding
 
 ```rust
-use xrs::{Util};
-
-...
-
 // Encode an X-Address.
-util.encode_x_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1", Some(12345), None)?; 
+xpring.encode_clasic_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1", Some(12345), None)?; 
 //XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT
 
 // Decode an X-Address.
-util.decode_x_address("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT")?; 
+xpring.decode_x_address("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT")?; 
 // ClassicAddress {
 //     address: "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1",
 //     tag: Some(12345),

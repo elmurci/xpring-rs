@@ -64,4 +64,10 @@ fn main() {
         sending_wallet,
     )?;
     println!("Payment sent, status {:?}", payment);
+
+    // Transaction Status
+    let transaction_status = xpring.get_transaction_status("51338E39369AECBA05B5826D77BD4C9092BAD6B578664548FE742C75D3C187CE")?;
+
+    println!("Status {:?}", transaction_status);
+    
 }

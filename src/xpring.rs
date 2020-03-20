@@ -1,5 +1,6 @@
 use crate::javascript::{JavaScript};
 use crate::util;
+use crate::transaction::{XTransactionStatus};
 use crate::address::{XClassicAddress};
 use crate::xrpclient::{XrpClient, XReliableSendResponse};
 use crate::wallet::{self, XWalletGenerationResult, XWallet};
@@ -157,6 +158,11 @@ impl Xpring {
         source_wallet: XWallet) -> XReliableSendResponse 
         {
         self.xrpclient.send(&mut self.jscontext, amount, from_x_address, to_x_address, source_wallet)?
+    }
+
+    #[throws(_)]
+    pub fn get_transaction_status(&mut self, transaction_hash: &str) -> XTransactionStatus {
+        self.xrpclient.get_transaction_status(transaction_hash)?
     }
 
 }

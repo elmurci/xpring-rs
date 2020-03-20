@@ -1,0 +1,21 @@
+[package]
+name = "xrs"
+version = "0.0.1"
+authors = ["Javi <elmurci@gmail.com>"]
+edition = "2018"
+build = "build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.26"
+fehler = "1.0.0-alpha.2"
+serde = { version = "1.0.104", features = ["derive"] }
+serde_json = "1.0.48"
+hex = "0.4.2"
+tonic = "0.1.1"
+tokio = { version = "0.2", features = ["macros"] }
+prost = "0.6.1"
+
+[build-dependencies]
+tonic-build = "0.1.1"

@@ -1,0 +1,10 @@
+{
+  "name": "javascript",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "xpring-common-js": "^3.0.2"
+  }
+}

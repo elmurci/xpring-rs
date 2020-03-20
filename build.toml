@@ -1,0 +1,33 @@
+[tasks.clean]
+command = "cargo"
+args = ["clean"]
+
+[tasks.build_mac]
+command = "cargo"
+args = ["build"]
+
+[tasks.build_mac_release]
+command = "cargo"
+args = ["build", "--release"]
+
+[tasks.generate_docs]
+command = "cargo"
+args = ["doc", "--no-deps", "--document-private-items"]
+
+[tasks.cp_docs]
+script = [
+    "cp -R $PWD/target/doc/* $PWD/docs"
+]
+
+[tasks.increase_patch]
+command = "cargo"
+args = ["bump", "patch"]
+
+[tasks.release]
+dependencies = [
+    "clean",
+    "test",
+    "generate_docs",
+    "cp_docs",
+    "increase_patch"
+]

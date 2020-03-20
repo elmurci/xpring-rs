@@ -128,10 +128,6 @@ println!("Private Key: {}", wallet.privateKey); //0090802A50AA84EFB6CDB225F17C27
 A wallet can also sign and verify arbitrary messages. Generally, users should use the functions on `wallet` to perform cryptographic functions rather than using these low level APIs.
 
 ```rust
-use xrs::{Wallet};
-
-...
-
 let signed_message = xpring.wallet_sign(
     "mymessage".to_owned(), 
     "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389".to_owned()
@@ -202,8 +198,6 @@ let response = client.send(12.12, "T7jkn8zYC2NhPdcbVxkiEXZGy56YiEE4P7uXRgpy5j4Q6
 #### Address validation
 
 ```rust
-use xrs::{Util};
-
 ...
 xpring.validate_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1")?; // returns true
 xpring.validate_address("XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi")?; // returns true
@@ -219,8 +213,6 @@ xpring.validate_x_address("1DiqLtKZZviDxccRpowkhVowsbLSNQWBE8")?; // returns fal
 ```
 
 ```rust
-use xrs::{address};
-
 ...
 
 xpring.validate_classic_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1")?; // returns true

@@ -935,7 +935,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "xpring-rs"
+name = "xpring"
 version = "0.0.2"
 dependencies = [
  "anyhow 1.0.27 (registry+https://github.com/rust-lang/crates.io-index)",

@@ -28,7 +28,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-xpring-rs = "0.0.2"
+xpring = "0.0.1"
 ```
 
 ## Usage
@@ -54,7 +54,7 @@ xpring-rs can derive a wallet from a seed or it can derive a hierarchical determ
 A hierarchical deterministic wallet is created using a mnemonic and a derivation path. Simply pass the mnemonic and derivation path to the wallet generation function. Note that you omit passing a derivation path and have a default path be used instead.
 
 ```rust
-use xpring_rs::{Xpring};
+use xpring::{Xpring};
 
 ...
 

@@ -1,5 +1,5 @@
 [package]
-name = "xpring-rs"
+name = "xpring"
 version = "0.0.2"
 authors = ["Javier Romero <elmurci@gmail.com>"]
 edition = "2018"

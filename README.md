@@ -1,3 +1,5 @@
+[![Docs](https://docs.rs/xpring/badge.svg?version=0.0.3)](https://docs.rs/xpring/badge.svg?version=0.0.3)
+
 # xpring-rs
 
 xpring-rs is a Rust client-side library that:

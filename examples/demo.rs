@@ -4,7 +4,7 @@ use xpring_rs::Xpring;
 
 #[throws(_)]
 fn main() {
-    // Util instance
+    // Xpring instance
     let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
 
     // Encode an X-Address

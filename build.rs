@@ -3,14 +3,7 @@ use std::{fs};
 fn main() {
     let out_dir = std::env::var("OUT_DIR").unwrap();
 
-    match fs::remove_file(format!("{}/xpring.js", out_dir)) {
-        Ok(result) => {
-           println!("Removing existing file... {:?}", result); 
-        },
-        Err(error) => {
-            println!("Error removing existing file... {:?}", error); 
-        }
-    }
+    let _ = fs::remove_file(format!("{}/xpring.js", out_dir));
 
     tonic_build::compile_protos("lib/ripple/xrp_ledger.proto").unwrap();
 

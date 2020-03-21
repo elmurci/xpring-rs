@@ -28,7 +28,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-xpring = "0.0.1"
+xpring = "0.0.3"
 ```
 
 ## Usage

@@ -236,6 +236,10 @@ xpring.decode_x_address("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT")?;
 // }
 ```
 
+# Examples
+
+You can find some sample code in the [examples](examples) folder.
+
 # Contributing
 
 TBD

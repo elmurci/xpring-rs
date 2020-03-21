@@ -3,7 +3,7 @@ use fehler::throws;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize)]
-pub struct XGenerateWalletOptions {
+struct XGenerateWalletOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     entropy: Option<String>,
     test: bool,
@@ -16,7 +16,7 @@ pub struct XGenerateWalletOptions {
 }
 
 impl<'a> XGenerateWalletOptions {
-    pub fn new(test: bool) -> XGenerateWalletOptions {
+    fn new(test: bool) -> XGenerateWalletOptions {
         XGenerateWalletOptions {
             entropy: None,
             test,
@@ -26,22 +26,22 @@ impl<'a> XGenerateWalletOptions {
         }
     }
 
-    pub fn seed(&'a mut self, seed: String) -> &'a mut XGenerateWalletOptions {
+    fn seed(&'a mut self, seed: String) -> &'a mut XGenerateWalletOptions {
         self.seed = Some(seed);
         self
     }
 
-    pub fn entropy(&'a mut self, entropy: String) -> &'a mut XGenerateWalletOptions {
+    fn entropy(&'a mut self, entropy: String) -> &'a mut XGenerateWalletOptions {
         self.entropy = Some(entropy);
         self
     }
 
-    pub fn mnemonic(&'a mut self, mnemonic: String) -> &'a mut XGenerateWalletOptions {
+    fn mnemonic(&'a mut self, mnemonic: String) -> &'a mut XGenerateWalletOptions {
         self.mnemonic = Some(mnemonic);
         self
     }
 
-    pub fn derivation_path(
+    fn derivation_path(
         &'a mut self,
         derivation_path: String,
     ) -> &'a mut XGenerateWalletOptions {
@@ -61,7 +61,8 @@ pub struct XWallet {
 }
 
 impl XWallet {
-    pub fn new(public_key: String, private_key: String, test: bool) -> XWallet {
+    #[allow(dead_code)]
+    pub(crate) fn new(public_key: String, private_key: String, test: bool) -> XWallet {
         XWallet {
             public_key,
             private_key,
@@ -85,7 +86,7 @@ struct XVerifyOptions {
 }
 
 impl XVerifyOptions {
-    pub fn new(message: String, signature: String, public_key: String) -> XVerifyOptions {
+    pub(crate) fn new(message: String, signature: String, public_key: String) -> XVerifyOptions {
         XVerifyOptions {
             message: hex::encode(message),
             signature,
@@ -103,7 +104,7 @@ pub struct XWalletGenerationResult {
 }
 
 #[throws(_)]
-pub fn generate_random(
+pub(crate) fn generate_random(
     jscontext: &mut JavaScript,
     entropy: Option<String>,
     test: bool,
@@ -119,7 +120,7 @@ pub fn generate_random(
 }
 
 #[throws(_)]
-pub fn from_mnemonic(
+pub(crate) fn from_mnemonic(
     jscontext: &mut JavaScript,
     mnemonic: String,
     derivation_path: Option<String>,
@@ -137,7 +138,7 @@ pub fn from_mnemonic(
 }
 
 #[throws(_)]
-pub fn from_seed(
+pub(crate) fn from_seed(
     jscontext: &mut JavaScript,
     seed: String,
     derivation_path: Option<String>,
@@ -153,7 +154,7 @@ pub fn from_seed(
 }
 
 #[throws(_)]
-pub fn sign(jscontext: &mut JavaScript, message: String, private_key: String) -> String {
+pub(crate) fn sign(jscontext: &mut JavaScript, message: String, private_key: String) -> String {
     let sign_options = XSignOptions {
         message: hex::encode(message),
         private_key,
@@ -163,7 +164,7 @@ pub fn sign(jscontext: &mut JavaScript, message: String, private_key: String) ->
 }
 
 #[throws(_)]
-pub fn verify(
+pub(crate) fn verify(
     jscontext: &mut JavaScript,
     message: String,
     signature: String,

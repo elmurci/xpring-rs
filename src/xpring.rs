@@ -33,12 +33,16 @@ impl Xpring {
     ///
     /// # Remarks
     ///
-    /// Returns a Xpring struct.
+    /// Returns a Xpring struct wrapped in a Result (Result<Xpring, anyhow::Error>).
     ///
     /// # Example
     ///
     /// ```
+    /// # use xpring_rs::Xpring;
+    /// # fn main() -> Result<(), anyhow::Error> {
     /// let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
+    /// # Ok(())
+    /// # }
     /// ```
     pub fn new(xrpclient_url: &'static str) -> Xpring {
         let xpringjs_path = copy_js_to_exec_path()?;
@@ -59,13 +63,18 @@ impl Xpring {
     ///
     /// # Remarks
     ///
-    /// Returns a XWalletGenerationResult with the generated wallet.
+    /// Returns a XWalletGenerationResult with the generated wallet wrapped in a Result (Result<XWalletGenerationResult, anyhow::Error>).
     ///
     /// # Example
     ///
     /// ```
-    /// let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
+    /// # use xpring_rs::Xpring;
+    /// # use xpring_rs::wallet::{XWalletGenerationResult};
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
     /// let random_wallet = xpring.generate_random_wallet(None, false)?;
+    /// # Ok(())
+    /// # }
     /// 
     /// // { 
     /// //   wallet: 
@@ -97,14 +106,18 @@ impl Xpring {
     ///
     /// # Remarks
     ///
-    /// Returns a XWallet with the generated wallet.
+    /// Returns a XWaller with the generated wallet wrapped in a Result (Result<XWallet, anyhow::Error>).
     /// 
     /// # Example
     ///
     /// ```
-    /// let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
+    /// # use xpring_rs::Xpring;
+    /// # use xpring_rs::wallet::{XWallet};
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
     /// let wallet_from_mnemonic = xpring.wallet_from_mnemonic("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about".to_owned(), Some("m/44'/144'/0'/0/1".to_owned()), true)?;
-    /// 
+    /// # Ok(())
+    /// # }
     /// // XWallet { 
     /// //  public_key: "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89", 
     /// //  private_key: "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389", 
@@ -132,14 +145,19 @@ impl Xpring {
     ///
     /// # Remarks
     ///
-    /// Returns a XWallet with the generated wallet.
+    /// Returns a XWallet with the generated wallet wrapped in a Result (Result<XWallet, anyhow::Error>).
     /// 
     /// # Example
     ///
     /// ```
-    /// let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
+    /// # use xpring_rs::Xpring;
+    /// # use xpring_rs::wallet::{XWallet};
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
     /// let wallet_from_seed =
     ///     xpring.wallet_from_seed("snYP7oArxKepd3GPDcrjMsJYiJeJB".to_owned(), None, true)?;
+    /// # Ok(())
+    /// # }
     /// 
     /// // XWallet { 
     /// //  public_key: "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89", 
@@ -167,15 +185,20 @@ impl Xpring {
     ///
     /// # Remarks
     ///
-    /// Returns a String with the signed message.
+    /// Returns a String with the signed message wrapped in a Result (Result<String, anyhow::Error>).
     /// 
     /// # Example
     ///
     /// ```
+    /// # use xpring_rs::Xpring;
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
     /// let signed_message = xpring.wallet_sign(
     ///     "mymessage".to_owned(),
     ///     "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389".to_owned(),
     /// )?;
+    /// # Ok(())
+    /// # }
     /// 
     /// // "3045022100DD88E31FF9AFD2A6DA48D40C4B4E8F11725E11C9D9E52388710E35ED19212EF6022068CFA9C09071322751C11DD21E89088879DC28B3B683D3F863090FB7C331EC32"
     /// ```
@@ -194,12 +217,17 @@ impl Xpring {
     ///
     /// # Remarks
     ///
-    /// Returns a true if verification is successful, false if not.
+    /// Returns a bool, true if verification is successful, false if not, wrapped in a Result (Result<bool, anyhow::Error>).
     /// 
     /// # Example
     ///
     /// ```
+    /// # use xpring_rs::Xpring;
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
     /// let message_verification_result = xpring.wallet_verify("mymessage".to_owned(), "3045022100DD88E31FF9AFD2A6DA48D40C4B4E8F11725E11C9D9E52388710E35ED19212EF6022068CFA9C09071322751C11DD21E89088879DC28B3B683D3F863090FB7C331EC32".to_owned(), "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89".to_owned())?;
+    /// # Ok(())
+    /// # }
     /// 
     /// // true
     /// ```
@@ -223,13 +251,18 @@ impl Xpring {
     ///
     /// # Remarks
     ///
-    /// Returns a true if verification is successful, false if not.
+    /// Returns a bool, true if verification is successful, false if not, wrapped in a Result (Result<bool, anyhow::Error>).
     /// 
     /// # Example
     ///
     /// ```
+    /// # use xpring_rs::Xpring;
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
     /// let is_address_valid =
     ///     xpring.validate_address("TVr7v7JGN5suv7Zgdu9aL4PtCkwayZNYWvjSG23uMMWMvzZ")?;
+    /// # Ok(())
+    /// # }
     /// 
     /// // true
     /// ```
@@ -246,13 +279,18 @@ impl Xpring {
     ///
     /// # Remarks
     ///
-    /// Returns a true if verification is successful, false if not
+    /// Returns a bool, true if verification is successful, false if not, wrapped in a Result (Result<bool, anyhow::Error>).
     /// 
     /// # Example
     ///
     /// ```
+    /// # use xpring_rs::Xpring;
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
     /// let is_address_valid =
     ///     xpring.validate_x_address("TVr7v7JGN5suv7Zgdu9aL4PtCkwayZNYWvjSG23uMMWMvzZ")?;
+    /// # Ok(())
+    /// # }
     /// 
     /// // true
     /// ```
@@ -269,13 +307,18 @@ impl Xpring {
     ///
     /// # Remarks
     ///
-    /// Returns a true if verification is successful, false if not.
+    /// Returns a bool, true if verification is successful, false if not, wrapped in a Result (Result<bool, anyhow::Error>).
     /// 
     /// # Example
     ///
     /// ```
+    /// # use xpring_rs::Xpring;
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
     /// let is_address_valid =
     ///     xpring.validate_classic_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1")?;
+    /// # Ok(())
+    /// # }
     /// 
     /// // true
     /// ```
@@ -292,13 +335,19 @@ impl Xpring {
     ///
     /// # Remarks
     ///
-    /// Returns a String with the X-Address
+    /// Returns a String with the X-Address wrapped in a Result (Result<String, anyhow::Error>).
     /// 
     /// # Example
     ///
     /// ```
+    /// # use xpring_rs::Xpring;
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
     /// let x_address =
     ///     xpring.encode_classic_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1", Some(12345), None)?;
+    /// # Ok(())
+    /// 
+    /// # }
     /// 
     /// // "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT"
     /// ```
@@ -320,13 +369,19 @@ impl Xpring {
     ///
     /// # Remarks
     ///
-    /// Returns a XClassicAddress struct.
+    /// Returns a XClassicAddress struct wrapped in a Result (Result<XClassicAddress, anyhow::Error>).
     /// 
     /// # Example
     ///
     /// ```
+    /// # use xpring_rs::Xpring;
+    /// # use xpring_rs::address::XClassicAddress;
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
     /// let classic_address =
     ///     xpring.decode_x_address("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT")?;
+    /// # Ok(())
+    /// # }
     /// 
     /// // { 
     /// //  address: "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1", 
@@ -349,12 +404,17 @@ impl Xpring {
     ///
     /// # Remarks
     ///
-    /// Returns a string f32 with the balance in decimal format.
+    /// Returns a f32 with the balance in decimal format wrapped in a Result (Result<f32, anyhow::Error> ).
     ///
     /// # Example
     ///
     /// ```
+    /// # use xpring_rs::Xpring;
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
     /// let balance = xpring.get_balance("TVr7v7JGN5suv7Zgdu9aL4PtCkwayZNYWvjSG23uMMWMvzZ")?;
+    /// # Ok(())
+    /// # }
     /// 
     /// // 1000
     /// ```
@@ -374,11 +434,15 @@ impl Xpring {
     ///
     /// # Remarks
     ///
-    /// Returns a XReliableSendResponse struct.
+    /// Returns a XReliableSendResponse wrapped in a Result (Result<XReliableSendResponse, anyhow::Error>).
     /// 
     /// # Example
     ///
     /// ```
+    /// # use xpring_rs::Xpring;
+    /// # use xpring_rs::xrpclient::{XReliableSendResponse};
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
     /// let sending_wallet =
     ///     xpring.wallet_from_seed("shKtxFAYfNUHYayYMYkp3KjQQX2UY".to_owned(), None, true)?;
     /// let payment = xpring.send(
@@ -387,6 +451,8 @@ impl Xpring {
     ///     "T7QqSicoC1nB4YRyzWzctWW7KjwiYUtDzVaLwFd4N7W1AUU",
     ///     sending_wallet,
     /// )?;
+    /// # Ok(())
+    /// # }
     /// 
     /// // { 
     /// //  transaction_status: FAILED, 
@@ -419,14 +485,20 @@ impl Xpring {
     ///
     /// # Remarks
     ///
-    /// Returns a transaction status (XTransactionStatus).
+    /// Returns a XTransactionStatus with the transaction status wrapped in a Result (Result<XTransactionStatus, anyhow::Error>).
     ///
     /// # Example
     ///
     /// ```
+    /// # use xpring_rs::Xpring;
+    /// # use xpring_rs::transaction::XTransactionStatus;
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
     /// let transaction_status = xpring.get_transaction_status(
     ///      "51338E39369AECBA05B5826D77BD4C9092BAD6B578664548FE742C75D3C187CE",
     /// )?;
+    /// # Ok(())
+    /// # }
     /// 
     /// // FAILED
     /// ```

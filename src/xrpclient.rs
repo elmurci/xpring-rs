@@ -36,7 +36,7 @@ pub struct XrpClient {
 
 impl XrpClient {
     #[throws(_)]
-    pub fn connect<D>(url: D) -> Self
+    pub(crate) fn connect<D>(url: D) -> Self
     where
         D: std::convert::TryInto<tonic::transport::Endpoint>,
         D::Error: Into<StdError>,
@@ -105,7 +105,7 @@ impl XrpClient {
     }
 
     #[throws(_)]
-    pub fn get_balance(&mut self, jscontext: &mut JavaScript, x_address: &'static str) -> f32 {
+    pub(crate) fn get_balance(&mut self, jscontext: &mut JavaScript, x_address: &'static str) -> f32 {
         let decoded_address = address::decode_x_address(jscontext, x_address)?;
         let response = self.get_account_info(&decoded_address.address)?;
         if let currency_amount::Amount::XrpAmount(d) =
@@ -162,13 +162,13 @@ impl XrpClient {
     }
 
     #[throws(_)]
-    pub fn get_transaction_status(&mut self, transaction_hash: &str) -> XTransactionStatus {
+    pub(crate) fn get_transaction_status(&mut self, transaction_hash: &str) -> XTransactionStatus {
         let transaction_status = self.get_raw_transaction_status(transaction_hash)?;
         transaction::from_raw_status(transaction_status)
     }
 
     #[throws(_)]
-    pub fn send(
+    pub(crate) fn send(
         &mut self,
         jscontext: &mut JavaScript,
         amount: f32,

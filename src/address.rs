@@ -21,7 +21,7 @@ pub struct XClassicAddress {
 }
 
 impl<'a> XAddressOptions {
-    pub fn new(test: bool) -> XAddressOptions {
+    pub(crate) fn new(test: bool) -> XAddressOptions {
         XAddressOptions {
             classic_address: None,
             x_address: None,
@@ -30,30 +30,30 @@ impl<'a> XAddressOptions {
         }
     }
 
-    pub fn classic_address(&'a mut self, classic_addres: &'static str) -> &'a mut XAddressOptions {
+    pub(crate) fn classic_address(&'a mut self, classic_addres: &'static str) -> &'a mut XAddressOptions {
         self.classic_address = Some(classic_addres);
         self
     }
 
-    pub fn x_address(&'a mut self, x_address: &'static str) -> &'a mut XAddressOptions {
+    pub(crate) fn x_address(&'a mut self, x_address: &'static str) -> &'a mut XAddressOptions {
         self.x_address = Some(x_address);
         self
     }
 
-    pub fn tag(&'a mut self, tag: u16) -> &'a mut XAddressOptions {
+    pub(crate) fn tag(&'a mut self, tag: u16) -> &'a mut XAddressOptions {
         self.tag = Some(tag);
         self
     }
 }
 
 #[throws(_)]
-pub fn is_valid_address(jscontext: &mut JavaScript, address: &str) -> bool {
+pub(crate) fn is_valid_address(jscontext: &mut JavaScript, address: &str) -> bool {
     let result = js!(jscontext.utils.isValidAddress::<bool>(address))?;
     result
 }
 
 #[throws(_)]
-pub fn encode_classic_address(
+pub(crate) fn encode_classic_address(
     jscontext: &mut JavaScript,
     classic_address: &'static str,
     tag: Option<u16>,
@@ -69,19 +69,19 @@ pub fn encode_classic_address(
 }
 
 #[throws(_)]
-pub fn is_valid_x_address(jscontext: &mut JavaScript, address: &str) -> bool {
+pub(crate) fn is_valid_x_address(jscontext: &mut JavaScript, address: &str) -> bool {
     let result = js!(jscontext.utils.isValidXAddress::<bool>(address))?;
     result
 }
 
 #[throws(_)]
-pub fn is_valid_classic_address(jscontext: &mut JavaScript, address: &str) -> bool {
+pub(crate) fn is_valid_classic_address(jscontext: &mut JavaScript, address: &str) -> bool {
     let result = js!(jscontext.utils.isValidClassicAddress::<bool>(address))?;
     result
 }
 
 #[throws(_)]
-pub fn decode_x_address(jscontext: &mut JavaScript, x_address: &'static str) -> XClassicAddress {
+pub(crate) fn decode_x_address(jscontext: &mut JavaScript, x_address: &'static str) -> XClassicAddress {
     let mut address = XAddressOptions::new(false);
     address.x_address(x_address);
     let result = js!(jscontext.utils.decodeXAddress::<XClassicAddress>(address))?;

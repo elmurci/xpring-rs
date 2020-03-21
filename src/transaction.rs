@@ -16,26 +16,26 @@ pub enum XTransactionStatus {
 }
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
-pub struct XPayment {
+pub(crate) struct XPayment {
     pub amount: XAmount,
     pub from_address: &'static str,
     pub to_address: &'static str,
 }
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
-pub struct XAmount {
+pub(crate) struct XAmount {
     pub drops: u64,
 }
 
 #[derive(PartialEq, Debug)]
-pub struct XRawTransactionStatus {
+pub(crate) struct XRawTransactionStatus {
     pub transaction_result: TransactionResult,
     pub last_ledger_sequence: u32,
     pub validated: bool,
 }
 
 impl XAmount {
-    pub fn new(amount: f32) -> XAmount {
+    pub(crate) fn new(amount: f32) -> XAmount {
         let drops = amount * 1_000_000.;
         XAmount {
             drops: drops as u64,
@@ -44,7 +44,7 @@ impl XAmount {
 }
 
 #[derive(PartialEq, Deserialize, Debug)]
-pub struct XSignedTransaction {
+pub(crate) struct XSignedTransaction {
     pub result: String,
 }
 

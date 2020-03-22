@@ -244,7 +244,7 @@ You can find some sample code in the [examples](examples) folder.
 
 # Contributing
 
-TBD
+Pull requests are welcome! To get started with building this library and opening pull requests, please see [contributing.md](CONTRIBUTING.md).
 
 # License
 

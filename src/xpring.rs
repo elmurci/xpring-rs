@@ -4,7 +4,7 @@ use crate::transaction::XTransactionStatus;
 use crate::util;
 use crate::wallet::{self, XWallet, XWalletGenerationResult};
 use crate::xrplclient::{XrplReliableSendResponse, XrplClient};
-use crate::ilpclient::{IlpSendResponse, IlpClient};
+use crate::ilpclient::{IlpSendResponse, IlpClient, IlpBalanceResponse};
 use fehler::throws;
 use std::fs;
 
@@ -522,6 +522,65 @@ impl Ilp {
         }
     }
 
+    /// Returns an account balance.
+    ///
+    /// # Remarks
+    ///
+    /// Returns a IlpBalanceResponse with the transaction status wrapped in a Result (Result<IlpBalanceResponse, anyhow::Error>).
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use xpring::Ilp;
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # let mut ilp = Ilp::new("http://hermes-grpc.ilpv4.dev", "sdk_account1", "password")?;
+    /// let balance = ilp.get_balance()?;
+    /// # Ok(())
+    /// # }
+    ///
+    /// //  IlpBalanceResponse {
+    /// //      account_id: "sdk_account1",
+    /// //      asset_code: "XRP",  
+    /// //      asset_scale: 9,
+    /// //      net_balance: -10491,
+    /// //      prepaid_amount: 0,
+    /// //      clearing_balance: -10491,
+    /// //  }
+    /// ```
+    #[throws(_)]
+    pub fn get_balance(&mut self) -> IlpBalanceResponse {
+        self.ilpclient.get_balance()?
+    }
+
+    /// Sends an ILP payment to an account.
+    ///
+    /// # Remarks
+    ///
+    /// Returns a IlpSendResponse with the transaction status wrapped in a Result (Result<IlpSendResponse, anyhow::Error>).
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use xpring::Ilp;
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # let mut ilp = Ilp::new("http://hermes-grpc.ilpv4.dev", "sdk_account1", "password")?;
+    /// let payment = ilp.send_to(
+    ///         "$money.ilpv4.dev/sdk_account2".to_owned(),
+    ///         13,
+    ///         10
+    ///     )?;
+    /// # Ok(())
+    /// # }
+    ///
+    /// //  IlpBalanceResponse {
+    /// //      account_id: "sdk_account1",
+    /// //      asset_code: "XRP",  
+    /// //      asset_scale: 9,
+    /// //      net_balance: -10491,
+    /// //      prepaid_amount: 0,
+    /// //      clearing_balance: -10491,
+    /// //  }
+    /// ```
     #[throws(_)]
     pub fn send_to(&mut self,
         destination_payment_pointer: String,

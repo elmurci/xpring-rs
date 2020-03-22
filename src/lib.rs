@@ -40,7 +40,7 @@ mod i {
     pub mod prelude {
         pub use super::{
             ilp_over_http_service_client::IlpOverHttpServiceClient, SendPaymentRequest,
-            SendPaymentResponse,
+            SendPaymentResponse, balance_service_client::BalanceServiceClient, GetBalanceRequest, GetBalanceResponse
         };
     }
 }

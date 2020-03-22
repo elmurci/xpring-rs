@@ -336,6 +336,7 @@ mod tests {
     fn test_send() {
         let mut client = XrplClient::connect(DEFAULT_SERVER_URL)?;
         let out_dir = std::env::var("OUT_DIR").unwrap();
+        println!("----OUT_DIR-----> {:?}", out_dir);
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
         let w = XWallet::new(
             "0314ACE51F9B116BCF3C1E38A9BD92706AF4334165870139144E947B27BB0103E8".to_owned(),

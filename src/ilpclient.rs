@@ -20,9 +20,20 @@ pub struct IlpSendResponse {
     pub amount_sent: u64,
 }
 
+#[derive(PartialEq, Debug)]
+pub struct IlpBalanceResponse {
+    pub account_id: String,
+    pub asset_code: String,
+    pub asset_scale: i32,
+    pub net_balance: i64,
+    pub prepaid_amount: i64,
+    pub clearing_balance: i64,
+}
+
 pub struct IlpClient {
     rt: Runtime,
-    client: IlpOverHttpServiceClient<tonic::transport::Channel>,
+    ilp_client: IlpOverHttpServiceClient<tonic::transport::Channel>,
+    balance_client: BalanceServiceClient<tonic::transport::Channel>,
     account_id: &'static str
 }
 
@@ -38,19 +49,47 @@ impl IlpClient {
                 bail!("token cannot be empty");
             }
         let channel = rt.block_on(Channel::from_static(url).connect())?;
-        let token = MetadataValue::from_str(&format!("Bearer {}", token))?;
-        let client =
-            IlpOverHttpServiceClient::with_interceptor(channel, move |mut req: Request<()>| {
-                req.metadata_mut().insert("authorization", token.clone());
-                Ok(req)
+        let bearer = format!("Bearer {}", token);
+        //TODO is there a better way than creating two clients?
+        let bal_token = MetadataValue::from_str(&bearer)?;
+        let ilp_token = MetadataValue::from_str(&bearer)?;
+        let ilp_client =
+            IlpOverHttpServiceClient::with_interceptor(channel.clone(), move |mut ilp_req: Request<()>| {
+                ilp_req.metadata_mut().insert("authorization", ilp_token.clone());
+                Ok(ilp_req)
             });
-        Self { rt, client, account_id }
+        let balance_client =
+            BalanceServiceClient::with_interceptor(channel, move |mut balance_req: Request<()>| {
+                balance_req.metadata_mut().insert("authorization", bal_token.clone());
+                Ok(balance_req)
+            });
+        Self { rt, ilp_client, balance_client, account_id }
     }
 
-    // #[throws(_)]
-    // pub(crate) fn get_balance(&mut self, jscontext: &mut JavaScript, x_address: &'static str) -> f32 {
-    //     //
-    // }
+    #[throws(_)]
+    pub(crate) fn get_balance(&mut self) -> IlpBalanceResponse {
+        let request = tonic::Request::new(GetBalanceRequest {
+            account_id: self.account_id.to_owned(),
+        });
+
+        match self.rt.block_on(self.balance_client.get_balance(request)) {
+            Ok(result) => {
+                let result = result.into_inner();
+                IlpBalanceResponse {
+                    account_id: result.account_id,
+                    asset_code: result.asset_code,
+                    asset_scale: result.asset_scale,
+                    net_balance: result.net_balance,
+                    prepaid_amount: result.prepaid_amount,
+                    clearing_balance: result.clearing_balance,
+                }
+            },
+            Err(error) => {
+                // error returned is Unknown, not a lot of information...
+                bail!(format!("balance request failed: {:?}", error.code()));
+            }
+        } 
+    }
 
     #[throws(_)]
     pub(crate) fn send(
@@ -66,7 +105,7 @@ impl IlpClient {
             account_id: self.account_id.to_owned(),
         });
 
-        match self.rt.block_on(self.client.send_money(request)) {
+        match self.rt.block_on(self.ilp_client.send_money(request)) {
             Ok(result) => {
                 let result = result.into_inner();
                 let payment_status = if result.successful_payment {
@@ -82,6 +121,7 @@ impl IlpClient {
                 }
             },
             Err(_error) => {
+                // error returned is Unknown, not a lot of information...
                 bail!("payment send failed");
             }
         } 
@@ -177,6 +217,20 @@ mod tests {
             }
             Err(_error) => {
                 assert!(true);
+            }
+        }
+    }
+
+    #[throws(_)]
+    #[test]
+    fn test_ilp_client_get_balance() {
+        let mut client = IlpClient::connect(DEFAULT_SERVER_URL, "sdk_account1", "password")?;
+        match client.get_balance() {
+            Ok(_result) => {
+                assert!(true);
+            }
+            Err(_error) => {
+                assert!(false);
             }
         }
     }

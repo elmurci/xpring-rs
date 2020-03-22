@@ -240,9 +240,28 @@ xrpl.decode_x_address("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT")?;
 
 ### ILP
 
-An `Ilp` instance can send ILP Payments.
+An `Ilp` instance can send ILP Payments and get account balances.
 
-#### Send Payment
+#### Get Balance
+
+```rust
+// Ilp instance
+let mut ilp = Ilp::new("http://hermes-grpc.ilpv4.dev", "test", "password")?;
+
+// Send Payment
+let payment =
+    ilp.get_balance()?;
+//  IlpBalanceResponse {
+//      account_id: "sdk_account1",
+//      asset_code: "XRP",
+//      asset_scale: 9,
+//      net_balance: -10491,
+//      prepaid_amount: 0,
+//      clearing_balance: -10491,
+//  }
+```
+
+#### Send ILP Payment
 
 ```rust
 // Ilp instance

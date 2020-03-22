@@ -9,7 +9,7 @@ xpring-rs is a Rust client-side library that:
 
 ## Architecture
 
-![alt text](architecture.png "xpring-rs Architecture")
+![alt text](https://raw.githubusercontent.com/elmurci/xpring-rs/master/architecture.png "xpring-rs Architecture")
 
 ## Features
 
@@ -155,7 +155,7 @@ let balance = xrpl.get_balance("TVr7v7JGN5suv7Zgdu9aL4PtCkwayZNYWvjSG23uMMWMvzZ"
 //1000.00
 ```
 
-### Checking Transaction Status
+#### Checking Transaction Status
 
 An `Xrpl` instance can check the status of an transaction on the XRP Ledger.
 
@@ -236,6 +236,31 @@ xrpl.decode_x_address("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT")?;
 //     tag: Some(12345),
 //     test: false
 // }
+```
+
+### ILP
+
+An `Ilp` instance can send ILP Payments.
+
+### Send Payment
+
+```rust
+// Ilp instance
+let mut ilp = Ilp::new("http://hermes-grpc.ilpv4.dev", "test", "password")?;
+
+// Send Payment
+let payment =
+    ilp.send_to(
+        "$money.ilpv4.dev/test2".to_owned(),
+        8,
+        10
+    )?;
+//  IlpSendResponse {
+//      payment_status: SUCCEEDED,
+//      original_amount: 8,
+//      amount_delivered: 8,
+//      amount_sent: 8,
+//  }
 ```
 
 # Examples

@@ -4,10 +4,10 @@ use xpring::Ilp;
 
 #[throws(_)]
 fn main() {
-    // Xpring instance
+    // Ilp instance
     let mut ilp = Ilp::new("http://hermes-grpc.ilpv4.dev", "sdk_account1", "password")?;
 
-    // Encode an X-Address
+    // Send Payment
     let payment =
         ilp.send_to(
             "$money.ilpv4.dev/sdk_account2".to_owned(),

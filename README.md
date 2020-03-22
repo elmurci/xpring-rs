@@ -35,11 +35,11 @@ xpring = "0.0.3"
 
 ## Usage
 
-**Note:** xRs only works with the X-Address format. For more information about this format, see the [Utilities section](#utilities) and <http://xrpaddress.info>.
+**Note:** xpring-rs only works with the X-Address format. For more information about this format, see the [Utilities section](#utilities) and <http://xrpaddress.info>.
 
 ### Wallets
 
-A wallet is a fundamental model object in xRs. A wallet provides:
+A wallet is a fundamental model object in xpring-rs. A wallet provides:
 
 - key management
 - address derivation
@@ -159,7 +159,7 @@ let balance = xrpl.get_balance("TVr7v7JGN5suv7Zgdu9aL4PtCkwayZNYWvjSG23uMMWMvzZ"
 
 An `Xrpl` instance can check the status of an transaction on the XRP Ledger.
 
-xRs returns the following transaction states:
+Xrpl returns the following transaction states:
 - `SUCCEEDED`: The transaction was successfully validated and applied to the XRP Ledger.
 - `FAILED:` The transaction was successfully validated but not applied to the XRP Ledger. Or the operation will never be validated.
 - `PENDING`: The transaction has not yet been validated, but may be validated in the future.
@@ -273,4 +273,4 @@ Pull requests are welcome! To get started with building this library and opening
 
 # License
 
-xRs is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
+xpring-rs is available under the MIT license. See the [LICENSE](LICENSE) file for more info.

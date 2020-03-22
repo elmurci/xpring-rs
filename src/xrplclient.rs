@@ -16,7 +16,7 @@ use tokio::runtime::{Builder, Runtime};
 type StdError = Box<dyn std::error::Error + Send + Sync + 'static>;
 
 #[derive(PartialEq, Debug)]
-pub struct XReliableSendResponse {
+pub struct XrplReliableSendResponse {
     pub transaction_status: XTransactionStatus,
     pub transaction_hash: String,
     pub transaction_info: String,
@@ -29,12 +29,12 @@ pub(self) fn drops_to_decimal(drops: u64) -> f32 {
 // The order of the fields in this struct is important. The runtime must be the first field and the
 // client must be the last field so that when `BlockingClient` is dropped the client is dropped
 // before the runtime. Not doing this will result in a deadlock when dropped.
-pub struct XrpClient {
+pub struct XrplClient {
     rt: Runtime,
     client: XrpLedgerApiServiceClient<tonic::transport::Channel>,
 }
 
-impl XrpClient {
+impl XrplClient {
     #[throws(_)]
     pub(crate) fn connect<D>(url: D) -> Self
     where
@@ -105,7 +105,11 @@ impl XrpClient {
     }
 
     #[throws(_)]
-    pub(crate) fn get_balance(&mut self, jscontext: &mut JavaScript, x_address: &'static str) -> f32 {
+    pub(crate) fn get_balance(
+        &mut self,
+        jscontext: &mut JavaScript,
+        x_address: &'static str,
+    ) -> f32 {
         let decoded_address = address::decode_x_address(jscontext, x_address)?;
         let response = self.get_account_info(&decoded_address.address)?;
         if let currency_amount::Amount::XrpAmount(d) =
@@ -175,7 +179,7 @@ impl XrpClient {
         from_address: &'static str,
         to_address: &'static str,
         source_wallet: XWallet,
-    ) -> XReliableSendResponse {
+    ) -> XrplReliableSendResponse {
         let ledger_close_time_seconds = 4;
         let payment = XPayment {
             amount: XAmount::new(amount),
@@ -235,7 +239,7 @@ impl XrpClient {
             "".to_owned()
         };
 
-        XReliableSendResponse {
+        XrplReliableSendResponse {
             transaction_status: result_transaction_status,
             transaction_hash: result_transaction_hash,
             transaction_info: result_transaction_info,
@@ -252,8 +256,8 @@ mod tests {
 
     #[throws(_)]
     #[test]
-    fn test_xpring_client_ok() {
-        match XrpClient::connect(DEFAULT_SERVER_URL) {
+    fn test_xrp_client_ok() {
+        match XrplClient::connect(DEFAULT_SERVER_URL) {
             Ok(_result) => {
                 assert!(true);
             }
@@ -265,8 +269,8 @@ mod tests {
 
     #[throws(_)]
     #[test]
-    fn test_xpring_client_invalid_url() {
-        match XrpClient::connect("xrp") {
+    fn test_xrp_client_invalid_url() {
+        match XrplClient::connect("xrp") {
             Ok(_result) => {
                 assert!(false);
             }
@@ -282,7 +286,7 @@ mod tests {
     #[throws(_)]
     #[test]
     fn test_xpring_get_base_fee() {
-        let mut client = XrpClient::connect(DEFAULT_SERVER_URL)?;
+        let mut client = XrplClient::connect(DEFAULT_SERVER_URL)?;
         let response = client.get_base_fee().unwrap();
         assert_eq!(response, 10);
     }
@@ -290,7 +294,7 @@ mod tests {
     #[throws(_)]
     #[test]
     fn test_xpring_get_balance() {
-        let mut client = XrpClient::connect(DEFAULT_SERVER_URL)?;
+        let mut client = XrplClient::connect(DEFAULT_SERVER_URL)?;
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
         let response = client
@@ -305,17 +309,32 @@ mod tests {
     #[throws(_)]
     #[test]
     fn test_xpring_raw_transaction_status() {
-        let mut client = XrpClient::connect(DEFAULT_SERVER_URL)?;
-        let response = client.get_raw_transaction_status(
-            "39BA523D7FF2FD3FA622B2C1028A0C62F23F2FBB98CBF3B1693B9162F00F5E20",
+        let mut client = XrplClient::connect(DEFAULT_SERVER_URL)?;
+        let out_dir = std::env::var("OUT_DIR").unwrap();
+        let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
+        let w = XWallet::new(
+            "0314ACE51F9B116BCF3C1E38A9BD92706AF4334165870139144E947B27BB0103E8".to_owned(),
+            "009F56FC7B02354C428673EA14854616FED71888270C44911CBD87B84A5A59650F".to_owned(),
+            false,
         );
-        assert_eq!(response.unwrap().transaction_result.result, "tesSUCCESS");
+        let payment = client.send(
+            &mut jscontext,
+            12.12,
+            "T7jkn8zYC2NhPdcbVxkiEXZGy56YiEE4P7uXRgpy5j4Q6S1",
+            "T7QqSicoC1nB4YRyzWzctWW7KjwiYUtDzVaLwFd4N7W1AUU",
+            w,
+        )?;
+        thread::sleep(Duration::from_secs(4));
+        let response = client.get_raw_transaction_status(
+            &payment.transaction_hash,
+        );
+        assert_eq!(response.unwrap().transaction_result.result.starts_with("t"), true);
     }
 
     #[throws(_)]
     #[test]
     fn test_send() {
-        let mut client = XrpClient::connect(DEFAULT_SERVER_URL)?;
+        let mut client = XrplClient::connect(DEFAULT_SERVER_URL)?;
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
         let w = XWallet::new(

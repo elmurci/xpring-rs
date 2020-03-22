@@ -222,7 +222,7 @@ xrpl.validate_classic_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1")?; // returns
 xrpl.validate_classic_address("XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi")?; // returns false
 ```
 
-### X-Address Encoding
+#### X-Address Encoding
 
 ```rust
 // Encode an X-Address.
@@ -242,7 +242,7 @@ xrpl.decode_x_address("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT")?;
 
 An `Ilp` instance can send ILP Payments.
 
-### Send Payment
+#### Send Payment
 
 ```rust
 // Ilp instance

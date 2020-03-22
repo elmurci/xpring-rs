@@ -30,7 +30,10 @@ impl<'a> XAddressOptions {
         }
     }
 
-    pub(crate) fn classic_address(&'a mut self, classic_addres: &'static str) -> &'a mut XAddressOptions {
+    pub(crate) fn classic_address(
+        &'a mut self,
+        classic_addres: &'static str,
+    ) -> &'a mut XAddressOptions {
         self.classic_address = Some(classic_addres);
         self
     }
@@ -81,7 +84,10 @@ pub(crate) fn is_valid_classic_address(jscontext: &mut JavaScript, address: &str
 }
 
 #[throws(_)]
-pub(crate) fn decode_x_address(jscontext: &mut JavaScript, x_address: &'static str) -> XClassicAddress {
+pub(crate) fn decode_x_address(
+    jscontext: &mut JavaScript,
+    x_address: &'static str,
+) -> XClassicAddress {
     let mut address = XAddressOptions::new(false);
     address.x_address(x_address);
     let result = js!(jscontext.utils.decodeXAddress::<XClassicAddress>(address))?;

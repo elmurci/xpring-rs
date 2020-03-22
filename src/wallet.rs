@@ -41,10 +41,7 @@ impl<'a> XGenerateWalletOptions {
         self
     }
 
-    fn derivation_path(
-        &'a mut self,
-        derivation_path: String,
-    ) -> &'a mut XGenerateWalletOptions {
+    fn derivation_path(&'a mut self, derivation_path: String) -> &'a mut XGenerateWalletOptions {
         self.derivation_path = Some(derivation_path);
         self
     }

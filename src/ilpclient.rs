@@ -66,19 +66,25 @@ impl IlpClient {
             account_id: self.account_id.to_owned(),
         });
 
-        let response = self.rt.block_on(self.client.send_money(request))?;
-        let result = response.into_inner();
-        let payment_status = if result.successful_payment {
-            IlpPaymentStatus::SUCCEEDED
-        } else {
-            IlpPaymentStatus::FAILED
-        };
-        IlpSendResponse {
-            payment_status,
-            original_amount: result.original_amount,
-            amount_delivered: result.amount_delivered,
-            amount_sent: result.amount_sent,
-        }
+        match self.rt.block_on(self.client.send_money(request)) {
+            Ok(result) => {
+                let result = result.into_inner();
+                let payment_status = if result.successful_payment {
+                    IlpPaymentStatus::SUCCEEDED
+                } else {
+                    IlpPaymentStatus::FAILED
+                };
+                IlpSendResponse {
+                    payment_status,
+                    original_amount: result.original_amount,
+                    amount_delivered: result.amount_delivered,
+                    amount_sent: result.amount_sent,
+                }
+            },
+            Err(_error) => {
+                bail!("payment send failed");
+            }
+        } 
     }
 }
 

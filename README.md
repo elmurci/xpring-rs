@@ -5,7 +5,7 @@
 xpring-rs is a Rust client-side library that:
 
 - Performs some offline calculations around XRP Ledger wallet generation/derivation
-- Provides an easy interface to interact with the XRP Ledger.
+- Provides an easy interface to interact with the XRP Ledger
 
 ## Architecture
 
@@ -174,7 +174,7 @@ let status = xpring.get_transaction_status("4DBA25199653A2E8BC5879DF2F830DA0149D
 //SUCCEEDED
 ```
 
-**Note:** The example transactionHash may lead to a "Transaction not found." error because the TestNet is regularly reset, or the accessed node may only maintain one month of history.  Recent transaction hashes can be found in the [XRP Ledger Explorer](https://livenet.xrpl.org)
+**Note:** The example transactionHash may lead to a "Transaction not found." error because the Testnet is regularly reset, or the accessed node may only maintain one month of history.  Recent transaction hashes can be found in the XRP Ledger Explorer: [Mainnet](https://livenet.xrpl.org) or [Testnet](https://testnet.xrpl.org).
 
 #### Sending XRP
 
@@ -226,11 +226,11 @@ xpring.validate_classic_address("XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi
 
 ```rust
 // Encode an X-Address.
-xpring.encode_clasic_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1", Some(12345), None)?; 
+xpring.encode_classic_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1", Some(12345), None)?;
 //XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT
 
 // Decode an X-Address.
-xpring.decode_x_address("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT")?; 
+xpring.decode_x_address("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT")?;
 // ClassicAddress {
 //     address: "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1",
 //     tag: Some(12345),

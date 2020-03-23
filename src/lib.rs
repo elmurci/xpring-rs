@@ -1,14 +1,14 @@
 //! The xpring-rs Library
 //!
 //! xpring-rs is a Rust client-side library that:
-//! 
+//!
 //! - Performs some offline calculations around XRP Ledger wallet generation/derivation
 //! - Provides an easy interface to interact with the XRP Ledger.
-//! 
+//!
 //! # Features
 //!
 //! xpring-rs provides the following features:
-//! 
+//!
 //! - Wallet generation and derivation (Seed-based or HD Wallet-based)
 //! - Address validation
 //! - Account balance retrieval
@@ -37,9 +37,9 @@ mod x {
 }
 
 // Public modules
+pub mod address;
 pub mod transaction;
 pub mod wallet;
 pub mod xrpclient;
-pub mod address;
 
 pub use crate::xpring::Xpring;

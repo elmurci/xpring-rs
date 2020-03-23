@@ -105,7 +105,11 @@ impl XrpClient {
     }
 
     #[throws(_)]
-    pub(crate) fn get_balance(&mut self, jscontext: &mut JavaScript, x_address: &'static str) -> f32 {
+    pub(crate) fn get_balance(
+        &mut self,
+        jscontext: &mut JavaScript,
+        x_address: &'static str,
+    ) -> f32 {
         let decoded_address = address::decode_x_address(jscontext, x_address)?;
         let response = self.get_account_info(&decoded_address.address)?;
         if let currency_amount::Amount::XrpAmount(d) =

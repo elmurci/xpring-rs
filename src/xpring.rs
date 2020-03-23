@@ -75,17 +75,17 @@ impl Xpring {
     /// let random_wallet = xpring.generate_random_wallet(None, false)?;
     /// # Ok(())
     /// # }
-    /// 
-    /// // { 
-    /// //   wallet: 
-    /// //     XWallet { 
-    /// //        public_key: "029D92AA16B71AB5EBADFD7A911C7CF8253C86BABFD7C6CB6A5587FCE20D26C5F0", 
-    /// //        private_key: "0006039508EB1F0BDDD511276BB8E08CDC00426992840F20083DF8E81E0AD84270", 
-    /// //        test: false, 
-    /// //        address: Some("XVesH3RwNwJ3bpAcVh54A2TxaVyyyomhErvVhfjHvrA3z2h") 
-    /// //     }, 
+    ///
+    /// // {
+    /// //   wallet:
+    /// //     XWallet {
+    /// //        public_key: "029D92AA16B71AB5EBADFD7A911C7CF8253C86BABFD7C6CB6A5587FCE20D26C5F0",
+    /// //        private_key: "0006039508EB1F0BDDD511276BB8E08CDC00426992840F20083DF8E81E0AD84270",
+    /// //        test: false,
+    /// //        address: Some("XVesH3RwNwJ3bpAcVh54A2TxaVyyyomhErvVhfjHvrA3z2h")
+    /// //     },
     /// //     mnemonic: "notable dilemma fringe install chicken icon please aim era security utility atom",
-    /// //     derivation_path: "m/44\'/144\'/0\'/0/0" 
+    /// //     derivation_path: "m/44\'/144\'/0\'/0/0"
     /// // }
     /// ```
     #[throws(_)]
@@ -107,7 +107,7 @@ impl Xpring {
     /// # Remarks
     ///
     /// Returns a XWaller with the generated wallet wrapped in a Result (Result<XWallet, anyhow::Error>).
-    /// 
+    ///
     /// # Example
     ///
     /// ```
@@ -118,11 +118,11 @@ impl Xpring {
     /// let wallet_from_mnemonic = xpring.wallet_from_mnemonic("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about".to_owned(), Some("m/44'/144'/0'/0/1".to_owned()), true)?;
     /// # Ok(())
     /// # }
-    /// // XWallet { 
-    /// //  public_key: "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89", 
-    /// //  private_key: "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389", 
-    /// //  test: true, 
-    /// //  address: Some("T7FxQEtaiNkq6ELhqGk3Pz2ov5aEoaGo6V642R74aaywJNT") 
+    /// // XWallet {
+    /// //  public_key: "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89",
+    /// //  private_key: "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389",
+    /// //  test: true,
+    /// //  address: Some("T7FxQEtaiNkq6ELhqGk3Pz2ov5aEoaGo6V642R74aaywJNT")
     /// // }
     /// ```
     #[throws(_)]
@@ -146,7 +146,7 @@ impl Xpring {
     /// # Remarks
     ///
     /// Returns a XWallet with the generated wallet wrapped in a Result (Result<XWallet, anyhow::Error>).
-    /// 
+    ///
     /// # Example
     ///
     /// ```
@@ -158,12 +158,12 @@ impl Xpring {
     ///     xpring.wallet_from_seed("snYP7oArxKepd3GPDcrjMsJYiJeJB".to_owned(), None, true)?;
     /// # Ok(())
     /// # }
-    /// 
-    /// // XWallet { 
-    /// //  public_key: "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89", 
-    /// //  private_key: "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389", 
-    /// //  test: true, 
-    /// //  address: Some("T7FxQEtaiNkq6ELhqGk3Pz2ov5aEoaGo6V642R74aaywJNT") 
+    ///
+    /// // XWallet {
+    /// //  public_key: "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89",
+    /// //  private_key: "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389",
+    /// //  test: true,
+    /// //  address: Some("T7FxQEtaiNkq6ELhqGk3Pz2ov5aEoaGo6V642R74aaywJNT")
     /// // }
     /// ```
     #[throws(_)]
@@ -186,7 +186,7 @@ impl Xpring {
     /// # Remarks
     ///
     /// Returns a String with the signed message wrapped in a Result (Result<String, anyhow::Error>).
-    /// 
+    ///
     /// # Example
     ///
     /// ```
@@ -199,7 +199,7 @@ impl Xpring {
     /// )?;
     /// # Ok(())
     /// # }
-    /// 
+    ///
     /// // "3045022100DD88E31FF9AFD2A6DA48D40C4B4E8F11725E11C9D9E52388710E35ED19212EF6022068CFA9C09071322751C11DD21E89088879DC28B3B683D3F863090FB7C331EC32"
     /// ```
     #[throws(_)]
@@ -218,7 +218,7 @@ impl Xpring {
     /// # Remarks
     ///
     /// Returns a bool, true if verification is successful, false if not, wrapped in a Result (Result<bool, anyhow::Error>).
-    /// 
+    ///
     /// # Example
     ///
     /// ```
@@ -228,7 +228,7 @@ impl Xpring {
     /// let message_verification_result = xpring.wallet_verify("mymessage".to_owned(), "3045022100DD88E31FF9AFD2A6DA48D40C4B4E8F11725E11C9D9E52388710E35ED19212EF6022068CFA9C09071322751C11DD21E89088879DC28B3B683D3F863090FB7C331EC32".to_owned(), "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89".to_owned())?;
     /// # Ok(())
     /// # }
-    /// 
+    ///
     /// // true
     /// ```
     #[throws(_)]
@@ -252,7 +252,7 @@ impl Xpring {
     /// # Remarks
     ///
     /// Returns a bool, true if verification is successful, false if not, wrapped in a Result (Result<bool, anyhow::Error>).
-    /// 
+    ///
     /// # Example
     ///
     /// ```
@@ -263,7 +263,7 @@ impl Xpring {
     ///     xpring.validate_address("TVr7v7JGN5suv7Zgdu9aL4PtCkwayZNYWvjSG23uMMWMvzZ")?;
     /// # Ok(())
     /// # }
-    /// 
+    ///
     /// // true
     /// ```
     #[throws(_)]
@@ -280,7 +280,7 @@ impl Xpring {
     /// # Remarks
     ///
     /// Returns a bool, true if verification is successful, false if not, wrapped in a Result (Result<bool, anyhow::Error>).
-    /// 
+    ///
     /// # Example
     ///
     /// ```
@@ -291,7 +291,7 @@ impl Xpring {
     ///     xpring.validate_x_address("TVr7v7JGN5suv7Zgdu9aL4PtCkwayZNYWvjSG23uMMWMvzZ")?;
     /// # Ok(())
     /// # }
-    /// 
+    ///
     /// // true
     /// ```
     #[throws(_)]
@@ -308,7 +308,7 @@ impl Xpring {
     /// # Remarks
     ///
     /// Returns a bool, true if verification is successful, false if not, wrapped in a Result (Result<bool, anyhow::Error>).
-    /// 
+    ///
     /// # Example
     ///
     /// ```
@@ -319,7 +319,7 @@ impl Xpring {
     ///     xpring.validate_classic_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1")?;
     /// # Ok(())
     /// # }
-    /// 
+    ///
     /// // true
     /// ```
     #[throws(_)]
@@ -336,7 +336,7 @@ impl Xpring {
     /// # Remarks
     ///
     /// Returns a String with the X-Address wrapped in a Result (Result<String, anyhow::Error>).
-    /// 
+    ///
     /// # Example
     ///
     /// ```
@@ -346,9 +346,9 @@ impl Xpring {
     /// let x_address =
     ///     xpring.encode_classic_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1", Some(12345), None)?;
     /// # Ok(())
-    /// 
+    ///
     /// # }
-    /// 
+    ///
     /// // "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT"
     /// ```
     #[throws(_)]
@@ -370,7 +370,7 @@ impl Xpring {
     /// # Remarks
     ///
     /// Returns a XClassicAddress struct wrapped in a Result (Result<XClassicAddress, anyhow::Error>).
-    /// 
+    ///
     /// # Example
     ///
     /// ```
@@ -382,11 +382,11 @@ impl Xpring {
     ///     xpring.decode_x_address("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT")?;
     /// # Ok(())
     /// # }
-    /// 
-    /// // { 
-    /// //  address: "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1", 
-    /// //  tag: Some(12345), 
-    /// //  test: false 
+    ///
+    /// // {
+    /// //  address: "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1",
+    /// //  tag: Some(12345),
+    /// //  test: false
     /// // }
     /// ```
     #[throws(_)]
@@ -415,7 +415,7 @@ impl Xpring {
     /// let balance = xpring.get_balance("TVr7v7JGN5suv7Zgdu9aL4PtCkwayZNYWvjSG23uMMWMvzZ")?;
     /// # Ok(())
     /// # }
-    /// 
+    ///
     /// // 1000
     /// ```
     #[throws(_)]
@@ -435,7 +435,7 @@ impl Xpring {
     /// # Remarks
     ///
     /// Returns a XReliableSendResponse wrapped in a Result (Result<XReliableSendResponse, anyhow::Error>).
-    /// 
+    ///
     /// # Example
     ///
     /// ```
@@ -453,10 +453,10 @@ impl Xpring {
     /// )?;
     /// # Ok(())
     /// # }
-    /// 
-    /// // { 
-    /// //  transaction_status: FAILED, 
-    /// //  transaction_hash: "2E01FED358DDB9B843116D858695D8EF3285BA6C7A478D054E05AD20BD50857C", 
+    ///
+    /// // {
+    /// //  transaction_status: FAILED,
+    /// //  transaction_hash: "2E01FED358DDB9B843116D858695D8EF3285BA6C7A478D054E05AD20BD50857C",
     /// //  transaction_info: "Insufficient XRP balance to send."
     /// // }
     /// ```
@@ -499,7 +499,7 @@ impl Xpring {
     /// )?;
     /// # Ok(())
     /// # }
-    /// 
+    ///
     /// // FAILED
     /// ```
     #[throws(_)]

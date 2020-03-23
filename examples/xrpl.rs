@@ -5,8 +5,8 @@ use xpring::Xrpl;
 #[throws(_)]
 fn main() {
 
-    // Xrpl instance
-    let mut xrpl = Xrpl::new("http://test.xrp.xrpl.io:50051")?;
+    // Xrpl instance (TestNet)
+    let mut xrpl = Xrpl::new("http://test.xrp.xrpl.io:50051", false)?;
 
     // Encode an X-Address
     let x_address =
@@ -39,19 +39,18 @@ fn main() {
     );
 
     // Generate a Random Wallet
-    let random_wallet = xrpl.generate_random_wallet(None, false)?;
+    let random_wallet = xrpl.generate_random_wallet(None)?;
     println!("\nRandom Wallet {:#?}", random_wallet);
 
     // // Generate a Wallet from a seed
     let wallet_from_seed =
-        xrpl.wallet_from_seed("snYP7oArxKepd3GPDcrjMsJYiJeJB", None, true)?;
+        xrpl.wallet_from_seed("snYP7oArxKepd3GPDcrjMsJYiJeJB", None)?;
     println!("\nWallet from seed {:#?}", wallet_from_seed);
 
     // Generate a Wallet from mnemonic
     let wallet_from_mnemonic = xrpl.wallet_from_mnemonic(
         "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about", 
-        Some("m/44'/144'/0'/0/1"), 
-        true
+        Some("m/44'/144'/0'/0/1")
     )?;
     println!("\nWallet from mnemonic {:#?}", wallet_from_mnemonic);
 
@@ -80,7 +79,7 @@ fn main() {
     //Send Payment
     println!("\nSending payment...");
     let sending_wallet =
-        xrpl.wallet_from_seed("shKtxFAYfNUHYayYMYkp3KjQQX2UY", None, true)?;
+        xrpl.wallet_from_seed("shKtxFAYfNUHYayYMYkp3KjQQX2UY", None)?;
     println!("sending_wallet {:?}", sending_wallet);
     let payment = xrpl.send(
         12.12,

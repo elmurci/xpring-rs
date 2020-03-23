@@ -59,14 +59,20 @@ A hierarchical deterministic wallet is created using a mnemonic and a derivation
 use xpring::{Xprl};
 
 ...
-
-let mut xrpl = Xprl::new("http://test.xrp.xpring.io:50051")?;
+// TestNet
+let mut xrpl = Xprl::new("http://test.xrp.xpring.io:50051", false)?;
 
 // With mnemonic and default derivation path
-let wallet_from_mnemonic = xrpl.wallet_from_mnemonic("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about", None, true)?;
+let wallet_from_mnemonic = xrpl.wallet_from_mnemonic(
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about", 
+    None
+)?;
 
 // With mnemonic and custom derivation path
-let wallet_from_mnemonic = xrpl.wallet_from_mnemonic("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about", Some("m/44'/144'/0'/0/1"), true)?;
+let wallet_from_mnemonic = xrpl.wallet_from_mnemonic(
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about", 
+    Some("m/44'/144'/0'/0/1")
+)?;
 ```
 
 ##### Seed-Based Wallets
@@ -74,7 +80,7 @@ let wallet_from_mnemonic = xrpl.wallet_from_mnemonic("abandon abandon abandon ab
 You can construct a seed based wallet by passing a base58check encoded seed string.
 
 ```rust
-let wallet_from_seed = xrpl.wallet_from_seed("snYP7oArxKepd3GPDcrjMsJYiJeJB", None, true)?;
+let wallet_from_seed = xrpl.wallet_from_seed("snYP7oArxKepd3GPDcrjMsJYiJeJB", None)?;
 // XWalletGenerationResult { wallet: 
 //   XWallet 
 //     { 
@@ -98,8 +104,8 @@ xpring-rs can generate a new and random HD Wallet. The result of a wallet genera
 
 ```rust
 // Generate a random wallet.
-let random_wallet = xrpl.generate_random_wallet(None, false)?; //no entropy and testnet 
-let random_wallet_with_entropy = xrpl.generate_random_wallet("00000000000000000000000000000000", false)?; //entropy and mainnet 
+let random_wallet = xrpl.generate_random_wallet(None)?; //no entropy and testnet 
+let random_wallet_with_entropy = xrpl.generate_random_wallet(Some("00000000000000000000000000000000"))?; //entropy and mainnet 
 
 // XWalletGenerationResult { wallet: 
 //   XWallet 
@@ -119,7 +125,10 @@ let random_wallet_with_entropy = xrpl.generate_random_wallet("000000000000000000
 A generated wallet can provide its public key, private key, and address on the XRP ledger.
 
 ```rust
-let wallet_from_mnemonic = xrpl.wallet_from_mnemonic("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about", Some("m/44'/144'/0'/0/1"), false)?;
+let wallet_from_mnemonic = xrpl.wallet_from_mnemonic(
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about", 
+    Some("m/44'/144'/0'/0/1")
+)?;
 
 println!("Address: {}", wallet.address); //XVMFQQBMhdouRqhPMuawgBMN1AVFTofPAdRsXG5RkPtUPNQ
 println!("Public Key: {}", wallet.publicKey); //031D68BC1A142E6766B2BDFB006CCFE135EF2E0E2E94ABB5CF5C9AB6104776FBAE
@@ -186,7 +195,6 @@ An `XrplClient` can send XRP to other [accounts](https://xrpl.org/accounts.html)
 let w = wallet.from_seed(
     "shKtxFAYfNUHYayYMYkp3KjQQX2UY",
     None,
-    true
 ).unwrap();
 let response = client.send(12.12, "T7jkn8zYC2NhPdcbVxkiEXZGy56YiEE4P7uXRgpy5j4Q6S1","T7QqSicoC1nB4YRyzWzctWW7KjwiYUtDzVaLwFd4N7W1AUU", w); 
 //XrplReliableSendResponse {

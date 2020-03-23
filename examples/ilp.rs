@@ -15,7 +15,7 @@ fn main() {
     // Send Payment
     let payment =
         ilp.send_to(
-            "$money.ilpv4.dev/sdk_account2".to_owned(),
+            "$money.ilpv4.dev/sdk_account2",
             13,
             10
         )?;

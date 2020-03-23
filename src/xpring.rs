@@ -3,7 +3,8 @@ use crate::javascript::JavaScript;
 use crate::transaction::XTransactionStatus;
 use crate::util;
 use crate::wallet::{self, XWallet, XWalletGenerationResult};
-use crate::xrpclient::{XReliableSendResponse, XrpClient};
+use crate::xrplclient::{XrplReliableSendResponse, XrplClient};
+use crate::ilpclient::{IlpSendResponse, IlpClient, IlpBalanceResponse};
 use fehler::throws;
 use std::fs;
 
@@ -17,19 +18,21 @@ fn copy_js_to_exec_path() -> String {
     xpringjs_path
 }
 
-/// The Xpring struct will allow you to access all sdk the methods
-pub struct Xpring {
+/// The Xrpl struct will allow you to access all the Xrpl methods
+pub struct Xrpl {
     pub(crate) jscontext: JavaScript,
-    pub(crate) xrpclient: XrpClient,
+    pub(crate) xrplclient: XrplClient,
+    pub(crate) test: bool
 }
 
-impl Xpring {
+impl Xrpl {
     #[throws(_)]
     /// Creates a Xpring struct.
     ///
     /// # Arguments
     ///
-    /// * `xrpclient_url` -  `&str` Url for the XRP Ledger node.
+    /// * `xrplclient_url` -  `&str` Url for the XRP Ledger node.
+    /// * `test` -  `bool` true for TestNet, false for MainNet.
     ///
     /// # Remarks
     ///
@@ -38,17 +41,18 @@ impl Xpring {
     /// # Example
     ///
     /// ```
-    /// # use xpring::Xpring;
+    /// # use xpring::Xrpl;
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
+    /// let mut xpring =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
     /// # Ok(())
     /// # }
     /// ```
-    pub fn new(xrpclient_url: &'static str) -> Xpring {
-        let xpringjs_path = copy_js_to_exec_path()?;
-        Xpring {
-            jscontext: JavaScript::new(xpringjs_path)?,
-            xrpclient: XrpClient::connect(xrpclient_url)?,
+    pub fn new<S: Into<String>>(xrplclient_url: S, test: bool) -> Xrpl {
+        let xrpljs_path = copy_js_to_exec_path()?;
+        Xrpl {
+            jscontext: JavaScript::new(xrpljs_path)?,
+            xrplclient: XrplClient::connect(xrplclient_url.into())?,
+            test
         }
     }
 
@@ -59,7 +63,6 @@ impl Xpring {
     /// # Arguments
     ///
     /// * `entropy` -  `Option<String>` (Optional) Entropy.
-    /// * `test` -  `bool` true for TestNet, false for MainNet.
     ///
     /// # Remarks
     ///
@@ -68,11 +71,11 @@ impl Xpring {
     /// # Example
     ///
     /// ```
-    /// # use xpring::Xpring;
+    /// # use xpring::Xrpl;
     /// # use xpring::wallet::{XWalletGenerationResult};
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
-    /// let random_wallet = xpring.generate_random_wallet(None, false)?;
+    /// # let mut xpring =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
+    /// let random_wallet = xpring.generate_random_wallet(None)?;
     /// # Ok(())
     /// # }
     ///
@@ -89,12 +92,11 @@ impl Xpring {
     /// // }
     /// ```
     #[throws(_)]
-    pub fn generate_random_wallet(
+    pub fn generate_random_wallet<S: Into<Option<String>>>(
         &mut self,
-        entropy: Option<String>,
-        test: bool,
+        entropy: S,
     ) -> XWalletGenerationResult {
-        wallet::generate_random(&mut self.jscontext, entropy, test)?
+        wallet::generate_random(&mut self.jscontext, entropy.into(), self.test)?
     }
 
     /// Generates a wallet from a mnemonic (and derivation path).
@@ -102,7 +104,6 @@ impl Xpring {
     /// # Arguments
     ///
     /// * `mnemonic` -  `Option<String>` Mnemonic.
-    /// * `test` -  `bool` true for TestNet, false for MainNet.
     ///
     /// # Remarks
     ///
@@ -111,11 +112,14 @@ impl Xpring {
     /// # Example
     ///
     /// ```
-    /// # use xpring::Xpring;
+    /// # use xpring::Xrpl;
     /// # use xpring::wallet::{XWallet};
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
-    /// let wallet_from_mnemonic = xpring.wallet_from_mnemonic("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about".to_owned(), Some("m/44'/144'/0'/0/1".to_owned()), true)?;
+    /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", true)?;
+    /// let wallet_from_mnemonic = xrpl.wallet_from_mnemonic(
+    ///     "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about", 
+    ///     Some("m/44'/144'/0'/0/1")
+    /// )?;
     /// # Ok(())
     /// # }
     /// // XWallet {
@@ -126,13 +130,17 @@ impl Xpring {
     /// // }
     /// ```
     #[throws(_)]
-    pub fn wallet_from_mnemonic(
+    pub fn wallet_from_mnemonic<S: Into<String>>(
         &mut self,
-        mnemonic: String,
-        derivation_path: Option<String>,
-        test: bool,
+        mnemonic: S,
+        derivation_path: Option<&str>,
     ) -> XWallet {
-        wallet::from_mnemonic(&mut self.jscontext, mnemonic, derivation_path, test)?
+        let derivation_path = if derivation_path.is_some() {
+            Some(derivation_path.unwrap().to_owned())
+        } else {
+            None
+        };
+        wallet::from_mnemonic(&mut self.jscontext, mnemonic.into(), derivation_path, self.test)?
     }
 
     /// Generates a wallet from a seed.
@@ -141,7 +149,6 @@ impl Xpring {
     ///
     /// * `seed` -  `String` Seed
     /// * `derivation_path` - `Option<String>` (Optional) Derivation path.
-    /// * `test` -  `bool` true for TestNet, false for MainNet.
     ///
     /// # Remarks
     ///
@@ -150,12 +157,12 @@ impl Xpring {
     /// # Example
     ///
     /// ```
-    /// # use xpring::Xpring;
+    /// # use xpring::Xrpl;
     /// # use xpring::wallet::{XWallet};
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
+    /// # let mut xprl =  Xrpl::new("http://test.xrp.xpring.io:50051", true)?;
     /// let wallet_from_seed =
-    ///     xpring.wallet_from_seed("snYP7oArxKepd3GPDcrjMsJYiJeJB".to_owned(), None, true)?;
+    ///     xprl.wallet_from_seed("snYP7oArxKepd3GPDcrjMsJYiJeJB", None)?;
     /// # Ok(())
     /// # }
     ///
@@ -167,13 +174,17 @@ impl Xpring {
     /// // }
     /// ```
     #[throws(_)]
-    pub fn wallet_from_seed(
+    pub fn wallet_from_seed<S: Into<String>>(
         &mut self,
-        seed: String,
-        derivation_path: Option<String>,
-        test: bool,
+        seed: S,
+        derivation_path: Option<&str>,
     ) -> XWallet {
-        wallet::from_seed(&mut self.jscontext, seed, derivation_path, test)?
+        let derivation_path = if derivation_path.is_some() {
+            Some(derivation_path.unwrap().to_owned())
+        } else {
+            None
+        };
+        wallet::from_seed(&mut self.jscontext, seed.into(), derivation_path, self.test)?
     }
 
     /// Signs a message with a private key.
@@ -190,12 +201,12 @@ impl Xpring {
     /// # Example
     ///
     /// ```
-    /// # use xpring::Xpring;
+    /// # use xpring::Xrpl;
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
-    /// let signed_message = xpring.wallet_sign(
-    ///     "mymessage".to_owned(),
-    ///     "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389".to_owned(),
+    /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
+    /// let signed_message = xrpl.wallet_sign(
+    ///     "mymessage",
+    ///     "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389",
     /// )?;
     /// # Ok(())
     /// # }
@@ -203,8 +214,8 @@ impl Xpring {
     /// // "3045022100DD88E31FF9AFD2A6DA48D40C4B4E8F11725E11C9D9E52388710E35ED19212EF6022068CFA9C09071322751C11DD21E89088879DC28B3B683D3F863090FB7C331EC32"
     /// ```
     #[throws(_)]
-    pub fn wallet_sign(&mut self, message: String, private_key: String) -> String {
-        wallet::sign(&mut self.jscontext, message, private_key)?
+    pub fn wallet_sign<S: Into<String>>(&mut self, message: S, private_key: S) -> String {
+        wallet::sign(&mut self.jscontext, message.into(), private_key.into())?
     }
 
     /// Verifies with a public key a signed message.
@@ -222,23 +233,27 @@ impl Xpring {
     /// # Example
     ///
     /// ```
-    /// # use xpring::Xpring;
+    /// # use xpring::Xrpl;
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
-    /// let message_verification_result = xpring.wallet_verify("mymessage".to_owned(), "3045022100DD88E31FF9AFD2A6DA48D40C4B4E8F11725E11C9D9E52388710E35ED19212EF6022068CFA9C09071322751C11DD21E89088879DC28B3B683D3F863090FB7C331EC32".to_owned(), "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89".to_owned())?;
+    /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
+    /// let message_verification_result = xrpl.wallet_verify(
+    ///     "mymessage", 
+    ///     "3045022100DD88E31FF9AFD2A6DA48D40C4B4E8F11725E11C9D9E52388710E35ED19212EF6022068CFA9C09071322751C11DD21E89088879DC28B3B683D3F863090FB7C331EC32", 
+    ///     "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89"
+    /// )?;
     /// # Ok(())
     /// # }
     ///
     /// // true
     /// ```
     #[throws(_)]
-    pub fn wallet_verify(
+    pub fn wallet_verify<S: Into<String>>(
         &mut self,
-        message: String,
-        signature: String,
-        public_key: String,
+        message: S,
+        signature: S,
+        public_key: S,
     ) -> bool {
-        wallet::verify(&mut self.jscontext, message, signature, public_key)?
+        wallet::verify(&mut self.jscontext, message.into(), signature.into(), public_key.into())?
     }
 
     // Util
@@ -256,19 +271,19 @@ impl Xpring {
     /// # Example
     ///
     /// ```
-    /// # use xpring::Xpring;
+    /// # use xpring::Xrpl;
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
+    /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
     /// let is_address_valid =
-    ///     xpring.validate_address("TVr7v7JGN5suv7Zgdu9aL4PtCkwayZNYWvjSG23uMMWMvzZ")?;
+    ///     xrpl.validate_address("TVr7v7JGN5suv7Zgdu9aL4PtCkwayZNYWvjSG23uMMWMvzZ")?;
     /// # Ok(())
     /// # }
     ///
     /// // true
     /// ```
     #[throws(_)]
-    pub fn validate_address(&mut self, address: &str) -> bool {
-        util::is_valid_address(&mut self.jscontext, address)?
+    pub fn validate_address(&mut self, address: &'static str) -> bool {
+        util::is_valid_address(&mut self.jscontext, address.into())?
     }
 
     /// Validates an X-Address
@@ -284,11 +299,11 @@ impl Xpring {
     /// # Example
     ///
     /// ```
-    /// # use xpring::Xpring;
+    /// # use xpring::Xrpl;
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
+    /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
     /// let is_address_valid =
-    ///     xpring.validate_x_address("TVr7v7JGN5suv7Zgdu9aL4PtCkwayZNYWvjSG23uMMWMvzZ")?;
+    ///     xrpl.validate_x_address("TVr7v7JGN5suv7Zgdu9aL4PtCkwayZNYWvjSG23uMMWMvzZ")?;
     /// # Ok(())
     /// # }
     ///
@@ -312,11 +327,11 @@ impl Xpring {
     /// # Example
     ///
     /// ```
-    /// # use xpring::Xpring;
+    /// # use xpring::Xrpl;
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
+    /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
     /// let is_address_valid =
-    ///     xpring.validate_classic_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1")?;
+    ///     xrpl.validate_classic_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1")?;
     /// # Ok(())
     /// # }
     ///
@@ -340,11 +355,11 @@ impl Xpring {
     /// # Example
     ///
     /// ```
-    /// # use xpring::Xpring;
+    /// # use xpring::Xrpl;
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
+    /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
     /// let x_address =
-    ///     xpring.encode_classic_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1", Some(12345), None)?;
+    ///     xrpl.encode_classic_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1", Some(12345), None)?;
     /// # Ok(())
     ///
     /// # }
@@ -374,12 +389,12 @@ impl Xpring {
     /// # Example
     ///
     /// ```
-    /// # use xpring::Xpring;
+    /// # use xpring::Xrpl;
     /// # use xpring::address::XClassicAddress;
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
+    /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
     /// let classic_address =
-    ///     xpring.decode_x_address("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT")?;
+    ///     xrpl.decode_x_address("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT")?;
     /// # Ok(())
     /// # }
     ///
@@ -394,7 +409,7 @@ impl Xpring {
         util::decode_x_address(&mut self.jscontext, x_address)?
     }
 
-    // XrpClient
+    // XrplClient
 
     /// Returns an account balance.
     ///
@@ -409,10 +424,10 @@ impl Xpring {
     /// # Example
     ///
     /// ```
-    /// # use xpring::Xpring;
+    /// # use xpring::Xrpl;
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
-    /// let balance = xpring.get_balance("TVr7v7JGN5suv7Zgdu9aL4PtCkwayZNYWvjSG23uMMWMvzZ")?;
+    /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
+    /// let balance = xrpl.get_balance("TVr7v7JGN5suv7Zgdu9aL4PtCkwayZNYWvjSG23uMMWMvzZ")?;
     /// # Ok(())
     /// # }
     ///
@@ -420,7 +435,7 @@ impl Xpring {
     /// ```
     #[throws(_)]
     pub fn get_balance(&mut self, x_address: &'static str) -> f32 {
-        self.xrpclient.get_balance(&mut self.jscontext, x_address)?
+        self.xrplclient.get_balance(&mut self.jscontext, x_address)?
     }
 
     /// Sends a payment from one account to another.
@@ -434,18 +449,21 @@ impl Xpring {
     ///
     /// # Remarks
     ///
-    /// Returns a XReliableSendResponse wrapped in a Result (Result<XReliableSendResponse, anyhow::Error>).
+    /// Returns a XrplReliableSendResponse wrapped in a Result (Result<XrplReliableSendResponse, anyhow::Error>).
     ///
     /// # Example
     ///
     /// ```
-    /// # use xpring::Xpring;
-    /// # use xpring::xrpclient::{XReliableSendResponse};
+    /// # use xpring::Xrpl;
+    /// # use xpring::xrplclient::{XrplReliableSendResponse};
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
+    /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
     /// let sending_wallet =
-    ///     xpring.wallet_from_seed("shKtxFAYfNUHYayYMYkp3KjQQX2UY".to_owned(), None, true)?;
-    /// let payment = xpring.send(
+    ///     xrpl.wallet_from_seed(
+    ///         "shKtxFAYfNUHYayYMYkp3KjQQX2UY", 
+    ///         None
+    ///     )?;
+    /// let payment = xrpl.send(
     ///     12.12,
     ///     "T7jkn8zYC2NhPdcbVxkiEXZGy56YiEE4P7uXRgpy5j4Q6S1",
     ///     "T7QqSicoC1nB4YRyzWzctWW7KjwiYUtDzVaLwFd4N7W1AUU",
@@ -467,8 +485,8 @@ impl Xpring {
         from_x_address: &'static str,
         to_x_address: &'static str,
         source_wallet: XWallet,
-    ) -> XReliableSendResponse {
-        self.xrpclient.send(
+    ) -> XrplReliableSendResponse {
+        self.xrplclient.send(
             &mut self.jscontext,
             amount,
             from_x_address,
@@ -490,11 +508,11 @@ impl Xpring {
     /// # Example
     ///
     /// ```
-    /// # use xpring::Xpring;
+    /// # use xpring::Xrpl;
     /// # use xpring::transaction::XTransactionStatus;
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # let mut xpring = Xpring::new("http://test.xrp.xpring.io:50051")?;
-    /// let transaction_status = xpring.get_transaction_status(
+    /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
+    /// let transaction_status = xrpl.get_transaction_status(
     ///      "51338E39369AECBA05B5826D77BD4C9092BAD6B578664548FE742C75D3C187CE",
     /// )?;
     /// # Ok(())
@@ -504,6 +522,92 @@ impl Xpring {
     /// ```
     #[throws(_)]
     pub fn get_transaction_status(&mut self, transaction_hash: &str) -> XTransactionStatus {
-        self.xrpclient.get_transaction_status(transaction_hash)?
+        self.xrplclient.get_transaction_status(transaction_hash)?
+    }
+}
+
+/// The Ilp struct will allow you to access all ILP methods
+pub struct Ilp {
+    pub(crate) ilpclient: IlpClient,
+}
+
+impl Ilp {
+    #[throws(_)]
+    pub fn new(ilpclient_url: &'static str, account_id: &'static str, token: &'static str) -> Ilp {
+        Ilp {
+            ilpclient: IlpClient::connect(ilpclient_url, account_id, token)?,
+        }
+    }
+
+    /// Returns an account balance.
+    ///
+    /// # Remarks
+    ///
+    /// Returns a IlpBalanceResponse with the transaction status wrapped in a Result (Result<IlpBalanceResponse, anyhow::Error>).
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use xpring::Ilp;
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # let mut ilp = Ilp::new("http://hermes-grpc.ilpv4.dev", "sdk_account1", "password")?;
+    /// let balance = ilp.get_balance()?;
+    /// # Ok(())
+    /// # }
+    ///
+    /// //  IlpBalanceResponse {
+    /// //      account_id: "sdk_account1",
+    /// //      asset_code: "XRP",  
+    /// //      asset_scale: 9,
+    /// //      net_balance: -10491,
+    /// //      prepaid_amount: 0,
+    /// //      clearing_balance: -10491,
+    /// //  }
+    /// ```
+    #[throws(_)]
+    pub fn get_balance(&mut self) -> IlpBalanceResponse {
+        self.ilpclient.get_balance()?
+    }
+
+    /// Sends an ILP payment to an account.
+    ///
+    /// # Remarks
+    ///
+    /// Returns a IlpSendResponse with the transaction status wrapped in a Result (Result<IlpSendResponse, anyhow::Error>).
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use xpring::Ilp;
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # let mut ilp = Ilp::new("http://hermes-grpc.ilpv4.dev", "sdk_account1", "password")?;
+    /// let payment = ilp.send_to(
+    ///         "$money.ilpv4.dev/sdk_account2",
+    ///         13,
+    ///         10
+    ///     )?;
+    /// # Ok(())
+    /// # }
+    ///
+    /// //  IlpBalanceResponse {
+    /// //      account_id: "sdk_account1",
+    /// //      asset_code: "XRP",  
+    /// //      asset_scale: 9,
+    /// //      net_balance: -10491,
+    /// //      prepaid_amount: 0,
+    /// //      clearing_balance: -10491,
+    /// //  }
+    /// ```
+    #[throws(_)]
+    pub fn send_to<S: Into<String>>(&mut self,
+        destination_payment_pointer: S,
+        amount: u64,
+        timeout_seconds: u64
+    ) -> IlpSendResponse {
+        self.ilpclient.send(
+            destination_payment_pointer.into(),
+            amount,
+            timeout_seconds
+        )?
     }
 }

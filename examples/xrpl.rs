@@ -5,8 +5,8 @@ use xpring::Xrpl;
 #[throws(_)]
 fn main() {
 
-    // Xrpl instance
-    let mut xrpl = Xrpl::new("http://test.xrp.xrpl.io:50051")?;
+    // Xrpl instance (TestNet)
+    let mut xrpl = Xrpl::new("http://test.xrp.xrpl.io:50051", false)?;
 
     // Encode an X-Address
     let x_address =
@@ -39,27 +39,30 @@ fn main() {
     );
 
     // Generate a Random Wallet
-    let random_wallet = xrpl.generate_random_wallet(None, false)?;
+    let random_wallet = xrpl.generate_random_wallet(None)?;
     println!("\nRandom Wallet {:#?}", random_wallet);
 
     // // Generate a Wallet from a seed
     let wallet_from_seed =
-        xrpl.wallet_from_seed("snYP7oArxKepd3GPDcrjMsJYiJeJB".to_owned(), None, true)?;
+        xrpl.wallet_from_seed("snYP7oArxKepd3GPDcrjMsJYiJeJB", None)?;
     println!("\nWallet from seed {:#?}", wallet_from_seed);
 
     // Generate a Wallet from mnemonic
-    let wallet_from_mnemonic = xrpl.wallet_from_mnemonic("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about".to_owned(), Some("m/44'/144'/0'/0/1".to_owned()), true)?;
+    let wallet_from_mnemonic = xrpl.wallet_from_mnemonic(
+        "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about", 
+        Some("m/44'/144'/0'/0/1")
+    )?;
     println!("\nWallet from mnemonic {:#?}", wallet_from_mnemonic);
 
     // Sign a message
     let signed_message = xrpl.wallet_sign(
-        "mymessage".to_owned(),
-        "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389".to_owned(),
+        "mymessage",
+        "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389",
     )?;
     println!("\nSigned Message {:?}", signed_message);
 
     // Verify a message
-    let message_verification_result = xrpl.wallet_verify("mymessage".to_owned(), "3045022100DD88E31FF9AFD2A6DA48D40C4B4E8F11725E11C9D9E52388710E35ED19212EF6022068CFA9C09071322751C11DD21E89088879DC28B3B683D3F863090FB7C331EC32".to_owned(), "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89".to_owned())?;
+    let message_verification_result = xrpl.wallet_verify("mymessage", "3045022100DD88E31FF9AFD2A6DA48D40C4B4E8F11725E11C9D9E52388710E35ED19212EF6022068CFA9C09071322751C11DD21E89088879DC28B3B683D3F863090FB7C331EC32", "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89")?;
     println!(
         "\nSigned Message Verification {:?}",
         message_verification_result
@@ -76,7 +79,7 @@ fn main() {
     //Send Payment
     println!("\nSending payment...");
     let sending_wallet =
-        xrpl.wallet_from_seed("shKtxFAYfNUHYayYMYkp3KjQQX2UY".to_owned(), None, true)?;
+        xrpl.wallet_from_seed("shKtxFAYfNUHYayYMYkp3KjQQX2UY", None)?;
     println!("sending_wallet {:?}", sending_wallet);
     let payment = xrpl.send(
         12.12,

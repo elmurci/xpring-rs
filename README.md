@@ -30,7 +30,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-xpring = "0.0.3"
+xpring = "0.0.4"
 ```
 
 ## Usage
@@ -59,14 +59,20 @@ A hierarchical deterministic wallet is created using a mnemonic and a derivation
 use xpring::{Xprl};
 
 ...
-
-let mut xrpl = Xprl::new("http://test.xrp.xpring.io:50051")?;
+// TestNet
+let mut xrpl = Xprl::new("http://test.xrp.xpring.io:50051", false)?;
 
 // With mnemonic and default derivation path
-let wallet_from_mnemonic = xrpl.wallet_from_mnemonic("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about".to_owned(), None, true)?;
+let wallet_from_mnemonic = xrpl.wallet_from_mnemonic(
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about", 
+    None
+)?;
 
 // With mnemonic and custom derivation path
-let wallet_from_mnemonic = xrpl.wallet_from_mnemonic("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about".to_owned(), Some("m/44'/144'/0'/0/1".to_owned()), true)?;
+let wallet_from_mnemonic = xrpl.wallet_from_mnemonic(
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about", 
+    Some("m/44'/144'/0'/0/1")
+)?;
 ```
 
 ##### Seed-Based Wallets
@@ -74,7 +80,7 @@ let wallet_from_mnemonic = xrpl.wallet_from_mnemonic("abandon abandon abandon ab
 You can construct a seed based wallet by passing a base58check encoded seed string.
 
 ```rust
-let wallet_from_seed = xrpl.wallet_from_seed("snYP7oArxKepd3GPDcrjMsJYiJeJB".to_owned(), None, true)?;
+let wallet_from_seed = xrpl.wallet_from_seed("snYP7oArxKepd3GPDcrjMsJYiJeJB", None)?;
 // XWalletGenerationResult { wallet: 
 //   XWallet 
 //     { 
@@ -98,8 +104,8 @@ xpring-rs can generate a new and random HD Wallet. The result of a wallet genera
 
 ```rust
 // Generate a random wallet.
-let random_wallet = xrpl.generate_random_wallet(None, false)?; //no entropy and testnet 
-let random_wallet_with_entropy = xrpl.generate_random_wallet("00000000000000000000000000000000".to_owned(), false)?; //entropy and mainnet 
+let random_wallet = xrpl.generate_random_wallet(None)?; //no entropy and testnet 
+let random_wallet_with_entropy = xrpl.generate_random_wallet(Some("00000000000000000000000000000000"))?; //entropy and mainnet 
 
 // XWalletGenerationResult { wallet: 
 //   XWallet 
@@ -119,7 +125,10 @@ let random_wallet_with_entropy = xrpl.generate_random_wallet("000000000000000000
 A generated wallet can provide its public key, private key, and address on the XRP ledger.
 
 ```rust
-let wallet_from_mnemonic = xrpl.wallet_from_mnemonic("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about".to_owned(), Some("m/44'/144'/0'/0/1".to_owned()), false)?;
+let wallet_from_mnemonic = xrpl.wallet_from_mnemonic(
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about", 
+    Some("m/44'/144'/0'/0/1")
+)?;
 
 println!("Address: {}", wallet.address); //XVMFQQBMhdouRqhPMuawgBMN1AVFTofPAdRsXG5RkPtUPNQ
 println!("Public Key: {}", wallet.publicKey); //031D68BC1A142E6766B2BDFB006CCFE135EF2E0E2E94ABB5CF5C9AB6104776FBAE
@@ -132,8 +141,8 @@ A wallet can also sign and verify arbitrary messages. Generally, users should us
 
 ```rust
 let signed_message = xrpl.wallet_sign(
-    "mymessage".to_owned(), 
-    "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389".to_owned()
+    "mymessage", 
+    "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389"
     ).unwrap();
 
 println!("Signed Message: {:?}", signed_message); //304402204146402099809E1F021421569F72BA34DCAFCC832741AB6310F887F60734D9F002203E813AD6A59D67D8EE06C8EA05BCC1BA8F690B631E6F243E8BE60633D27BE05D
@@ -141,9 +150,9 @@ println!("Signed Message: {:?}", signed_message); //304402204146402099809E1F0214
 ...
 
 let verified_message = xrpl.wallet_verify(
-    "mymessage".to_owned(), 
-    "3045022100DD88E31FF9AFD2A6DA48D40C4B4E8F11725E11C9D9E52388710E35ED19212EF6022068CFA9C09071322751C11DD21E89088879DC28B3B683D3F863090FB7C331EC32".to_owned(), 
-    "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89".to_owned()
+    "mymessage", 
+    "3045022100DD88E31FF9AFD2A6DA48D40C4B4E8F11725E11C9D9E52388710E35ED19212EF6022068CFA9C09071322751C11DD21E89088879DC28B3B683D3F863090FB7C331EC32", 
+    "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89"
 ).unwrap();
 // true
 ```
@@ -184,9 +193,8 @@ An `XrplClient` can send XRP to other [accounts](https://xrpl.org/accounts.html)
 
 ```rust
 let w = wallet.from_seed(
-    "shKtxFAYfNUHYayYMYkp3KjQQX2UY".to_owned(),
+    "shKtxFAYfNUHYayYMYkp3KjQQX2UY",
     None,
-    true
 ).unwrap();
 let response = client.send(12.12, "T7jkn8zYC2NhPdcbVxkiEXZGy56YiEE4P7uXRgpy5j4Q6S1","T7QqSicoC1nB4YRyzWzctWW7KjwiYUtDzVaLwFd4N7W1AUU", w); 
 //XrplReliableSendResponse {
@@ -270,7 +278,7 @@ let mut ilp = Ilp::new("http://hermes-grpc.ilpv4.dev", "test", "password")?;
 // Send Payment
 let payment =
     ilp.send_to(
-        "$money.ilpv4.dev/test2".to_owned(),
+        "$money.ilpv4.dev/test2",
         8,
         10
     )?;

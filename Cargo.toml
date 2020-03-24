@@ -1,6 +1,6 @@
 [package]
 name = "xpring"
-version = "0.0.4"
+version = "0.0.6"
 authors = ["Javier Romero <elmurci@gmail.com>"]
 edition = "2018"
 build = "build.rs"
@@ -8,7 +8,7 @@ repository = "https://github.com/elmurci/xpring-rs"
 license = "MIT"
 keywords = ["xrp", "xrp_ledger", "xpring", "crypto"]
 homepage = "https://github.com/elmurci/xpring-rs"
-documentation = "https://docs.rs/xpring/"
+documentation = "https://elmurci/xpring/"
 description = "Rust client-side library for the XRP Ledger"
 readme = "README.md"
 

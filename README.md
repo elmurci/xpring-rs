@@ -1,4 +1,5 @@
-[![Docs](https://docs.rs/xpring/badge.svg?version=0.0.3)](https://docs.rs/xpring/badge.svg?version=0.0.3)
+[![Crate](https://img.shields.io/crates/v/xpring.svg)](https://crates.io/crates/xpring)
+[![Docs](https://img.shields.io/badge/rust-documentation-blue.svg)](https://elmurci/xpring)
 
 # xpring-rs
 
@@ -30,7 +31,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-xpring = "0.0.4"
+xpring = "0.0.6"
 ```
 
 ## Usage

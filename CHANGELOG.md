@@ -11,8 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version 0.0.7 - Mar 24, 2020
 
+- Fix docs link for crates.io
+
 ## Version 0.0.6 - Mar 24, 2020
 
+- Docs improvements and fixes
 
 ## Version 0.0.5 - Mar 23, 2020
 

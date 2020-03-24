@@ -1,6 +1,7 @@
 [![Crate](https://img.shields.io/crates/v/xpring.svg)](https://crates.io/crates/xpring)
 [![Docs](https://img.shields.io/badge/rust-documentation-blue.svg)](https://elmurci/xpring)
 
+
 # xpring-rs
 
 xpring-rs is a Rust client-side library that:

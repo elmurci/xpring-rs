@@ -18,6 +18,7 @@ Rust comminicates via IPC with the node process to perform some of the cryptogra
 
 Before being considered for review or merging, each pull request must:
 
+- Follow [AngularJS Git Commit Message Conventions](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit?pref=2&pli=1#heading=h.uyo6cb12dt6w)
 - Pass continuous integration tests.
 - Update documentation for any new features.
 - Please run `clippy` and `rustfmt` before sending a pull request.

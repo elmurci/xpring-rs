@@ -5,7 +5,8 @@ rust:
     - beta
     - nightly
 install: 
-    - rustup component add rustfmt
+    - rustup toolchain remove stable && rustup toolchain install stable
+    - rustup component add rustfmt --toolchain stable
 
   jobs:
   allow_failures:

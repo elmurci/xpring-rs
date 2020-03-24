@@ -1,17 +1,13 @@
 language: rust
+
 rust:
-  - stable
-  - beta
-  - nightly
-jobs:
+    - stable
+    - beta
+    - nightly
+install: 
+    - rustup component add rustfmt
+
+  jobs:
   allow_failures:
     - rust: nightly
   fast_finish: true
-before_script:
-- rustup toolchain install nightly
-- rustup component add --toolchain nightly rustfmt-preview
-- which rustfmt || cargo install --force rustfmt-nightly
-script:
-- cargo +nightly fmt --all -- --write-mode=diff
-- cargo build
-- cargo test

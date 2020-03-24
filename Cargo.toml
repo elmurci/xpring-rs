@@ -8,7 +8,7 @@ repository = "https://github.com/elmurci/xpring-rs"
 license = "MIT"
 keywords = ["xrp", "xrp_ledger", "xpring", "crypto"]
 homepage = "https://github.com/elmurci/xpring-rs"
-documentation = "https://elmurci.com/xpring/"
+documentation = "https://docs.rs/xpring/"
 description = "Rust client-side library for the XRP Ledger"
 readme = "README.md"
 

@@ -1,4 +1,4 @@
-[![Travis CI](https://api.travis-ci.org/elmurci/xpring-rs.svg?branch=master)](https://travis-ci.org/elmurci/xpring)
+![Rust](https://github.com/elmurci/xpring-rs/workflows/Rust/badge.svg)
 [![Crate](https://img.shields.io/crates/v/xpring.svg)](https://crates.io/crates/xpring)
 [![Docs](https://img.shields.io/badge/rust-documentation-blue.svg)](https://elmurci/xpring)
 

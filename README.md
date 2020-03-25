@@ -1,6 +1,6 @@
 [![Crate](https://github.com/elmurci/xpring-rs/workflows/Rust/badge.svg)](https://github.com/elmurci/xpring-rs/actions)
 [![Crate](https://img.shields.io/crates/v/xpring.svg)](https://crates.io/crates/xpring)
-[![Docs](https://img.shields.io/badge/rust-documentation-blue.svg)](https://elmurci.com/xpring)
+[![Docs](https://img.shields.io/badge/rust-documentation-blue.svg)](https://docs.rs/xpring)
 
 # xpring-rs
 

@@ -19,6 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version 0.0.5 - Mar 23, 2020
 
+- Into trait in proxy calls
+We can make our function easier for the caller to work with by using the Into trait.
+This trait will can automatically convert a &str into a String. If we already have a String, then no conversion happens.
+
+- Moving test boolean form methods to Xrpl constructor
+Moving the test boolean parameter in functions to the Xprl constructor will make things easier as we won't have to repeat it for every method.
+
 ### ILP Support
 
 #### Into trait in proxy calls

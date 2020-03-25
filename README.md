@@ -88,7 +88,8 @@ let wallet_from_seed = xrpl.wallet_from_seed("snYP7oArxKepd3GPDcrjMsJYiJeJB", No
 //     { 
 //       public_key: "031D68BC1A142E6766B2BDFB006CCFE135EF2E0E2E94ABB5CF5C9AB6104776FBAE", 
 //       private_key: "0090802A50AA84EFB6CDB225F17C27616EA94048C179142FECF03F4712A07EA7A4", 
-//       test: true, address: Some("TVHLFWLKvbMv1LFzd6FA2Bf9MPpcy4mRto4VFAAxLuNpvdW") 
+//       test: true, 
+//       address: Some("TVHLFWLKvbMv1LFzd6FA2Bf9MPpcy4mRto4VFAAxLuNpvdW") 
 //     }, 
 //   mnemonic: "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about", 
 //   derivation_path: "m/44\'/144\'/0\'/0/0" 
@@ -211,7 +212,6 @@ let response = client.send(12.12, "T7jkn8zYC2NhPdcbVxkiEXZGy56YiEE4P7uXRgpy5j4Q6
 #### Address validation
 
 ```rust
-...
 xrpl.validate_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1")?; // returns true
 xrpl.validate_address("XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi")?; // returns true
 xrpl.validate_address("1DiqLtKZZviDxccRpowkhVowsbLSNQWBE8")?; // returns false
@@ -226,8 +226,6 @@ xrpl.validate_x_address("1DiqLtKZZviDxccRpowkhVowsbLSNQWBE8")?; // returns false
 ```
 
 ```rust
-...
-
 xrpl.validate_classic_address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1")?; // returns true
 xrpl.validate_classic_address("XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi")?; // returns false
 ```
@@ -298,7 +296,7 @@ You can find some sample code in the [examples](examples) folder.
 
 # Contributing
 
-Pull requests are welcome! To get started with building this library and opening pull requests, please see [contributing.md](CONTRIBUTING.md).
+Pull requests are welcome! To get started with building this library and opening pull requests, please see the[contributing](CONTRIBUTING.md) page.
 
 # License
 

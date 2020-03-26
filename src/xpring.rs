@@ -6,7 +6,7 @@ use crate::wallet::{self, XWallet, XWalletGenerationResult};
 use crate::xrplclient::{XrplReliableSendResponse, XrplClient};
 use crate::ilpclient::{IlpSendResponse, IlpClient, IlpBalanceResponse};
 use fehler::throws;
-use std::fs;
+use std::{fs, env};
 
 #[throws(_)]
 fn copy_js_to_exec_path() -> String {
@@ -18,6 +18,12 @@ fn copy_js_to_exec_path() -> String {
     xpringjs_path
 }
 
+#[throws(_)]
+fn set_vars() {
+    env::set_var("NODE_NO_WARNINGS", "1");
+}
+
+
 /// The Xrpl struct will allow you to access all the Xrpl methods
 pub struct Xrpl {
     pub(crate) jscontext: JavaScript,
@@ -26,7 +32,6 @@ pub struct Xrpl {
 }
 
 impl Xrpl {
-    #[throws(_)]
     /// Creates a Xpring struct.
     ///
     /// # Arguments
@@ -47,8 +52,10 @@ impl Xrpl {
     /// # Ok(())
     /// # }
     /// ```
+    #[throws(_)]
     pub fn new<S: Into<String>>(xrplclient_url: S, test: bool) -> Xrpl {
         let xrpljs_path = copy_js_to_exec_path()?;
+        set_vars()?;
         Xrpl {
             jscontext: JavaScript::new(xrpljs_path)?,
             xrplclient: XrplClient::connect(xrplclient_url.into())?,

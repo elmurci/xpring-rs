@@ -58,11 +58,11 @@ xpring-rs can derive a wallet from a seed or it can derive a hierarchical determ
 A hierarchical deterministic wallet is created using a mnemonic and a derivation path. Simply pass the mnemonic and derivation path to the wallet generation function. Note that you omit passing a derivation path and have a default path be used instead.
 
 ```rust
-use xpring::{Xprl};
+use xpring::{Xrpl};
 
 ...
 // TestNet
-let mut xrpl = Xprl::new("http://test.xrp.xpring.io:50051", false)?;
+let mut xrpl = Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
 
 // With mnemonic and default derivation path
 let wallet_from_mnemonic = xrpl.wallet_from_mnemonic(
@@ -296,7 +296,7 @@ You can find some sample code in the [examples](examples) folder.
 
 # Contributing
 
-Pull requests are welcome! To get started with building this library and opening pull requests, please see the[contributing](CONTRIBUTING.md) page.
+Pull requests are welcome! To get started with building this library and opening pull requests, please see the [contributing](CONTRIBUTING.md) page.
 
 # License
 

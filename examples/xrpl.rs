@@ -87,7 +87,7 @@ fn main() {
         "T7QqSicoC1nB4YRyzWzctWW7KjwiYUtDzVaLwFd4N7W1AUU",
         sending_wallet,
     )?;
-    println!("Payment sen: {:#?}", payment);
+    println!("Payment sent: {:#?}", payment);
 
     // Transaction Status
     let transaction_status = xrpl.get_transaction_status(

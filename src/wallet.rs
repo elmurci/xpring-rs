@@ -94,10 +94,10 @@ impl XVerifyOptions {
 
 #[derive(PartialEq, Debug, Deserialize)]
 pub struct XWalletGenerationResult {
-    wallet: XWallet,
-    mnemonic: String,
+    pub wallet: XWallet,
+    pub mnemonic: String,
     #[serde(rename(deserialize = "derivationPath"))]
-    derivation_path: String,
+    pub derivation_path: String,
 }
 
 #[throws(_)]

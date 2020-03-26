@@ -6,7 +6,7 @@ use xpring::Xrpl;
 fn main() {
 
     // Xrpl instance (TestNet)
-    let mut xrpl = Xrpl::new("http://test.xrp.xrpl.io:50051", false)?;
+    let mut xrpl = Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
 
     // Encode an X-Address
     let x_address =
@@ -40,7 +40,7 @@ fn main() {
 
     // Generate a Random Wallet
     let random_wallet = xrpl.generate_random_wallet(None)?;
-    println!("\nRandom Wallet {:#?}", random_wallet);
+    println!("\nRandom Wallet {}", random_wallet.wallet.public_key);
 
     // // Generate a Wallet from a seed
     let wallet_from_seed =

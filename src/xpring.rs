@@ -520,7 +520,7 @@ impl Xrpl {
     /// # fn main() -> Result<(), anyhow::Error> {
     /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
     /// let transaction_status = xrpl.get_transaction_status(
-    ///      "51338E39369AECBA05B5826D77BD4C9092BAD6B578664548FE742C75D3C187CE",
+    ///      "D8ACE7916D3E6B92F3EAAC85E16E16CEA3A72842DC2564EFCBA5649F9B8058ED",
     /// )?;
     /// # Ok(())
     /// # }

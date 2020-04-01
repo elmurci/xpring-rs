@@ -18,8 +18,8 @@ pub enum XTransactionStatus {
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 pub(crate) struct XPayment {
     pub amount: XAmount,
-    pub from_address: &'static str,
-    pub to_address: &'static str,
+    pub from_address: String,
+    pub to_address: String,
 }
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
@@ -246,8 +246,8 @@ mod tests {
         );
         let p = XPayment {
             amount: XAmount::new(12.12),
-            from_address: "XVwDxLQ4SN9pEBQagTNHwqpFkPgGppXqrMoTmUcSKdCtcK5",
-            to_address: "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH",
+            from_address: "XVwDxLQ4SN9pEBQagTNHwqpFkPgGppXqrMoTmUcSKdCtcK5".to_owned(),
+            to_address: "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH".to_owned(),
         };
         let r = build_payment_transaction(p, 12, 10, 139019301, &w).unwrap();
         assert_eq!(
@@ -273,8 +273,8 @@ mod tests {
         );
         let p = XPayment {
             amount: XAmount::new(0.000010),
-            from_address: "T7jkn8zYC2NhPdcbVxkiEXZGy56YiEE4P7uXRgpy5j4Q6S1",
-            to_address: "T7QqSicoC1nB4YRyzWzctWW7KjwiYUo9ZAXPrwRoKJ7FudP",
+            from_address: "T7jkn8zYC2NhPdcbVxkiEXZGy56YiEE4P7uXRgpy5j4Q6S1".to_owned(),
+            to_address: "T7QqSicoC1nB4YRyzWzctWW7KjwiYUo9ZAXPrwRoKJ7FudP".to_owned(),
         };
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
@@ -293,8 +293,8 @@ mod tests {
         );
         let p = XPayment {
             amount: XAmount::new(0.000010),
-            from_address: "T7jkn8zYC2NhPdcbVxkiEXZGy56YiEE4P7uXRgpy5j4Q6S1",
-            to_address: "T7QqSicoC1nB4YRyzWzctWW7KjwiYUtDzVaLwFd4N7W1AUU",
+            from_address: "T7jkn8zYC2NhPdcbVxkiEXZGy56YiEE4P7uXRgpy5j4Q6S1".to_owned(),
+            to_address: "T7QqSicoC1nB4YRyzWzctWW7KjwiYUtDzVaLwFd4N7W1AUU".to_owned(),
         };
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;

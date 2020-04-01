@@ -14,7 +14,7 @@ pub fn is_valid_address(jscontext: &mut JavaScript, address: &str) -> bool {
 #[throws(_)]
 pub fn encode_classic_address(
     jscontext: &mut JavaScript,
-    classic_address: &'static str,
+    classic_address: &str,
     tag: Option<u16>,
     test: Option<bool>,
 ) -> String {
@@ -22,17 +22,17 @@ pub fn encode_classic_address(
 }
 
 #[throws(_)]
-pub fn decode_x_address(jscontext: &mut JavaScript, x_address: &'static str) -> XClassicAddress {
+pub fn decode_x_address(jscontext: &mut JavaScript, x_address: &str) -> XClassicAddress {
     address::decode_x_address(jscontext, x_address)?
 }
 
 #[throws(_)]
-pub fn is_valid_x_address(jscontext: &mut JavaScript, x_address: &'static str) -> bool {
+pub fn is_valid_x_address(jscontext: &mut JavaScript, x_address: &str) -> bool {
     address::is_valid_x_address(jscontext, x_address)?
 }
 
 #[throws(_)]
-pub fn is_valid_classic_address(jscontext: &mut JavaScript, address: &'static str) -> bool {
+pub fn is_valid_classic_address(jscontext: &mut JavaScript, address: &str) -> bool {
     address::is_valid_classic_address(jscontext, address)?
 }
 

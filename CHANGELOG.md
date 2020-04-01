@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -
 
+## Version 0.0.9 - Apr 1, 2020
+
+- Fixed: Remove static references when unneeded
+- Minor cosmetic fixes in examples and docs
+
 ## Version 0.0.8 - Mar 26, 2020
 
 - Fixed bug: Calls to nodejs process was causing some DeprecationWarnings (thrown by a 3rd party dependency)

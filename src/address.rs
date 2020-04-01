@@ -5,9 +5,9 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize)]
 struct XAddressOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
-    classic_address: Option<&'static str>,
+    classic_address: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    x_address: Option<&'static str>,
+    x_address: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tag: Option<u16>,
     test: bool,
@@ -32,13 +32,13 @@ impl<'a> XAddressOptions {
 
     pub(crate) fn classic_address(
         &'a mut self,
-        classic_addres: &'static str,
+        classic_addres: String,
     ) -> &'a mut XAddressOptions {
         self.classic_address = Some(classic_addres);
         self
     }
 
-    pub(crate) fn x_address(&'a mut self, x_address: &'static str) -> &'a mut XAddressOptions {
+    pub(crate) fn x_address(&'a mut self, x_address: String) -> &'a mut XAddressOptions {
         self.x_address = Some(x_address);
         self
     }
@@ -58,12 +58,12 @@ pub(crate) fn is_valid_address(jscontext: &mut JavaScript, address: &str) -> boo
 #[throws(_)]
 pub(crate) fn encode_classic_address(
     jscontext: &mut JavaScript,
-    classic_address: &'static str,
+    classic_address: &str,
     tag: Option<u16>,
     test: Option<bool>,
 ) -> String {
     let mut address = XAddressOptions::new(test.unwrap_or(false));
-    address.classic_address(classic_address);
+    address.classic_address(classic_address.to_owned());
     if let Some(i) = tag {
         address.tag(i);
     }
@@ -86,10 +86,10 @@ pub(crate) fn is_valid_classic_address(jscontext: &mut JavaScript, address: &str
 #[throws(_)]
 pub(crate) fn decode_x_address(
     jscontext: &mut JavaScript,
-    x_address: &'static str,
+    x_address: &str,
 ) -> XClassicAddress {
     let mut address = XAddressOptions::new(false);
-    address.x_address(x_address);
+    address.x_address(x_address.to_owned());
     let result = js!(jscontext.utils.decodeXAddress::<XClassicAddress>(address))?;
     result
 }

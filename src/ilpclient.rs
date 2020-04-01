@@ -39,7 +39,7 @@ pub struct IlpClient {
 
 impl IlpClient {
     #[throws(_)]
-    pub(crate) fn connect(url: &'static str, account_id: &'static str, token: &'static str) -> Self {
+    pub(crate) fn connect(url: &'static str, account_id: &'static str, token: &str) -> Self {
         let mut rt = Builder::new()
             .basic_scheduler()
             .enable_all()

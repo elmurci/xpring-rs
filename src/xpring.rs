@@ -289,7 +289,7 @@ impl Xrpl {
     /// // true
     /// ```
     #[throws(_)]
-    pub fn validate_address(&mut self, address: &'static str) -> bool {
+    pub fn validate_address(&mut self, address: &str) -> bool {
         util::is_valid_address(&mut self.jscontext, address.into())?
     }
 
@@ -317,7 +317,7 @@ impl Xrpl {
     /// // true
     /// ```
     #[throws(_)]
-    pub fn validate_x_address(&mut self, x_address: &'static str) -> bool {
+    pub fn validate_x_address(&mut self, x_address: &str) -> bool {
         util::is_valid_x_address(&mut self.jscontext, x_address)?
     }
 
@@ -345,7 +345,7 @@ impl Xrpl {
     /// // true
     /// ```
     #[throws(_)]
-    pub fn validate_classic_address(&mut self, classic_address: &'static str) -> bool {
+    pub fn validate_classic_address(&mut self, classic_address: &str) -> bool {
         util::is_valid_classic_address(&mut self.jscontext, classic_address)?
     }
 
@@ -376,7 +376,7 @@ impl Xrpl {
     #[throws(_)]
     pub fn encode_classic_address(
         &mut self,
-        classic_address: &'static str,
+        classic_address: &str,
         tag: Option<u16>,
         test: Option<bool>,
     ) -> String {
@@ -412,7 +412,7 @@ impl Xrpl {
     /// // }
     /// ```
     #[throws(_)]
-    pub fn decode_x_address(&mut self, x_address: &'static str) -> XClassicAddress {
+    pub fn decode_x_address(&mut self, x_address: &str) -> XClassicAddress {
         util::decode_x_address(&mut self.jscontext, x_address)?
     }
 
@@ -441,7 +441,7 @@ impl Xrpl {
     /// // 1000
     /// ```
     #[throws(_)]
-    pub fn get_balance(&mut self, x_address: &'static str) -> f32 {
+    pub fn get_balance(&mut self, x_address: &str) -> f32 {
         self.xrplclient.get_balance(&mut self.jscontext, x_address)?
     }
 
@@ -489,8 +489,8 @@ impl Xrpl {
     pub fn send(
         &mut self,
         amount: f32,
-        from_x_address: &'static str,
-        to_x_address: &'static str,
+        from_x_address: &str,
+        to_x_address: &str,
         source_wallet: XWallet,
     ) -> XrplReliableSendResponse {
         self.xrplclient.send(
@@ -540,7 +540,7 @@ pub struct Ilp {
 
 impl Ilp {
     #[throws(_)]
-    pub fn new(ilpclient_url: &'static str, account_id: &'static str, token: &'static str) -> Ilp {
+    pub fn new(ilpclient_url: &'static str, account_id: &'static str, token: &str) -> Ilp {
         Ilp {
             ilpclient: IlpClient::connect(ilpclient_url, account_id, token)?,
         }

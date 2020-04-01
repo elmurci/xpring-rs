@@ -97,7 +97,7 @@ impl XrplClient {
     pub(self) fn get_account_sequence(
         &mut self,
         jscontext: &mut JavaScript,
-        x_address: &'static str,
+        x_address: &str,
     ) -> u32 {
         let decoded_address = address::decode_x_address(jscontext, x_address)?;
         let account_info = self.get_account_info(&decoded_address.address)?;
@@ -108,7 +108,7 @@ impl XrplClient {
     pub(crate) fn get_balance(
         &mut self,
         jscontext: &mut JavaScript,
-        x_address: &'static str,
+        x_address: &str,
     ) -> f32 {
         let decoded_address = address::decode_x_address(jscontext, x_address)?;
         let response = self.get_account_info(&decoded_address.address)?;
@@ -176,22 +176,22 @@ impl XrplClient {
         &mut self,
         jscontext: &mut JavaScript,
         amount: f32,
-        from_address: &'static str,
-        to_address: &'static str,
+        from_address: &str,
+        to_address: &str,
         source_wallet: XWallet,
     ) -> XrplReliableSendResponse {
         let ledger_close_time_seconds = 4;
         let payment = XPayment {
             amount: XAmount::new(amount),
-            from_address,
-            to_address,
+            from_address: from_address.to_owned(),
+            to_address: to_address.to_owned(),
         };
-        if !address::is_valid_x_address(jscontext, payment.to_address).unwrap()
-            || !address::is_valid_x_address(jscontext, payment.from_address).unwrap()
+        if !address::is_valid_x_address(jscontext, &payment.to_address).unwrap()
+            || !address::is_valid_x_address(jscontext, &payment.from_address).unwrap()
         {
             bail!("Please use the X-Address format. See: https://xrpaddress.info.");
         }
-        let account_sequence = self.get_account_sequence(jscontext, from_address)?;
+        let account_sequence = self.get_account_sequence(jscontext, &from_address)?;
         let latest_ledger = self.get_latest_validated_ledger_sequence()?;
         let last_validated_ledger_sequence = latest_ledger + config::MAX_LEDGER_VERSION_OFFSET;
         let transaction = transaction::build_payment_transaction(

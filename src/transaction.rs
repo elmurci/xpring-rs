@@ -1,7 +1,7 @@
 use crate::javascript::{JavaScript, JsCall};
 use crate::wallet::XWallet;
 use crate::x::prelude::*;
-use anyhow::bail;
+use anyhow::{bail, Error};
 use fehler::throws;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};

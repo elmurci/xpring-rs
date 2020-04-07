@@ -1,6 +1,7 @@
 use crate::javascript::{JavaScript, JsCall};
 use fehler::throws;
 use serde::{Deserialize, Serialize};
+use anyhow::Error;
 
 #[derive(Debug, Serialize)]
 struct XGenerateWalletOptions {

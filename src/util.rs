@@ -3,6 +3,7 @@ use crate::address::XClassicAddress;
 use crate::javascript::JavaScript;
 use fehler::throws;
 use std::str;
+use anyhow::Error;
 
 // Address
 

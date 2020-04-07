@@ -7,6 +7,7 @@ use crate::xrplclient::{XrplReliableSendResponse, XrplClient};
 use crate::ilpclient::{IlpSendResponse, IlpClient, IlpBalanceResponse};
 use fehler::throws;
 use std::{fs, env};
+use anyhow::Error;
 
 #[throws(_)]
 fn copy_js_to_exec_path() -> String {
@@ -520,7 +521,7 @@ impl Xrpl {
     /// # fn main() -> Result<(), anyhow::Error> {
     /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
     /// let transaction_status = xrpl.get_transaction_status(
-    ///      "A8ACE7916D3E6B92F3EAAC85E16E16CEA3A72842DC2564EFCBA5649F9B8058ED",
+    ///      "DCDFF1F2A89762CC8209F545D3C950CDCA00262A6A07CCA99C06235198746803",
     /// )?;
     /// # Ok(())
     /// # }

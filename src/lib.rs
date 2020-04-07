@@ -13,7 +13,6 @@
 //! - Address validation
 //! - Account balance retrieval
 //! - Sending XRP Payments
-use anyhow::Error;
 
 // Private modules
 #[macro_use]

@@ -5,7 +5,7 @@ use crate::transaction;
 use crate::transaction::{XAmount, XPayment, XRawTransactionStatus, XTransactionStatus};
 use crate::wallet::XWallet;
 use crate::x::prelude::*;
-use anyhow::bail;
+use anyhow::{bail, Error};
 use fehler::throws;
 use hex;
 use std::str;

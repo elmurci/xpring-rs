@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -
 
+## Version 0.0.10 - Apr 7, 2020
+
+- Fixed bug: anyhow::Error not being imported in some modules caused errors.
+
+
 ## Version 0.0.9 - Apr 1, 2020
 
 - Fixed: Removed the 'static scope in function whenever it is not strictly needed.

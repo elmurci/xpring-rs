@@ -32,7 +32,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-xpring = "0.0.9"
+xpring = "0.0.10"
 ```
 
 ## Usage

@@ -121,6 +121,7 @@ impl IlpClient {
             },
             Err(_error) => {
                 // error returned is Unknown, not a lot of information...
+                println!("*************************_error {:#?}", _error);
                 bail!("payment send failed");
             }
         } 
@@ -132,7 +133,7 @@ mod tests {
 
     use super::*;
 
-    pub const DEFAULT_SERVER_URL: &str = "http://hermes-grpc.ilpv4.dev";
+    pub const DEFAULT_SERVER_URL: &str = "http://hermes-envoy-test.xpring.io";
 
     #[throws(_)]
     #[test]

@@ -38,17 +38,18 @@ mod i {
     tonic::include_proto!("org.interledger.stream.proto");
     pub mod prelude {
         pub use super::{
-            ilp_over_http_service_client::IlpOverHttpServiceClient, SendPaymentRequest,
-            SendPaymentResponse, balance_service_client::BalanceServiceClient, GetBalanceRequest, GetBalanceResponse
+            balance_service_client::BalanceServiceClient,
+            ilp_over_http_service_client::IlpOverHttpServiceClient, GetBalanceRequest,
+            GetBalanceResponse, SendPaymentRequest, SendPaymentResponse,
         };
     }
 }
 
 // Public modules
 pub mod address;
+pub mod ilpclient;
 pub mod transaction;
 pub mod wallet;
 pub mod xrplclient;
-pub mod ilpclient;
 
-pub use crate::xpring::{Xrpl, Ilp};
+pub use crate::xpring::{Ilp, Xrpl};

@@ -1,7 +1,7 @@
 use crate::javascript::{JavaScript, JsCall};
+use anyhow::Error;
 use fehler::throws;
 use serde::{Deserialize, Serialize};
-use anyhow::Error;
 
 #[derive(Debug, Serialize)]
 struct XAddressOptions {
@@ -31,10 +31,7 @@ impl<'a> XAddressOptions {
         }
     }
 
-    pub(crate) fn classic_address(
-        &'a mut self,
-        classic_addres: String,
-    ) -> &'a mut XAddressOptions {
+    pub(crate) fn classic_address(&'a mut self, classic_addres: String) -> &'a mut XAddressOptions {
         self.classic_address = Some(classic_addres);
         self
     }
@@ -85,10 +82,7 @@ pub(crate) fn is_valid_classic_address(jscontext: &mut JavaScript, address: &str
 }
 
 #[throws(_)]
-pub(crate) fn decode_x_address(
-    jscontext: &mut JavaScript,
-    x_address: &str,
-) -> XClassicAddress {
+pub(crate) fn decode_x_address(jscontext: &mut JavaScript, x_address: &str) -> XClassicAddress {
     let mut address = XAddressOptions::new(false);
     address.x_address(x_address.to_owned());
     let result = js!(jscontext.utils.decodeXAddress::<XClassicAddress>(address))?;

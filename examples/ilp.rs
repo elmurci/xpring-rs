@@ -8,18 +8,10 @@ fn main() {
     let mut ilp = Ilp::new("http://hermes-grpc.ilpv4.dev", "sdk_account1", "password")?;
 
     // Get Balance
-    let balance =
-        ilp.get_balance()?;
+    let balance = ilp.get_balance()?;
     println!("Get Balance {:#?}", balance);
 
     // Send Payment
-    let payment =
-        ilp.send_to(
-            "$money.ilpv4.dev/sdk_account2",
-            13,
-            10
-        )?;
+    let payment = ilp.send_to("$money.ilpv4.dev/sdk_account2", 13, 10)?;
     println!("\nILP Payment {:#?}", payment);
-
-    
 }

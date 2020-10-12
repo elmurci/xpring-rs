@@ -5,6 +5,6 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "xpring-common-js": "^3.0.2"
+    "xpring-common-js": "^6.2.3"
   }
 }

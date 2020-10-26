@@ -251,6 +251,7 @@ impl XrplClient {
 mod tests {
 
     use super::*;
+    use crate::wallet::from_seed;
 
     pub const DEFAULT_SERVER_URL: &str = "http://test.xrp.xpring.io:50051";
 
@@ -312,15 +313,16 @@ mod tests {
         let mut client = XrplClient::connect(DEFAULT_SERVER_URL)?;
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        let w = XWallet::new(
-            "0314ACE51F9B116BCF3C1E38A9BD92706AF4334165870139144E947B27BB0103E8".to_owned(),
-            "009F56FC7B02354C428673EA14854616FED71888270C44911CBD87B84A5A59650F".to_owned(),
-            false,
-        );
+        let w = from_seed(
+            &mut jscontext,
+            "sn3UJSLzAEeAGcrK3nsQTDZW6KT92".to_string(),
+            None,
+            true
+        )?;
         let payment = client.send(
             &mut jscontext,
             12.12,
-            "T7jkn8zYC2NhPdcbVxkiEXZGy56YiEE4P7uXRgpy5j4Q6S1",
+            "T7o8yn1iXP9wC1vgCuCpYYQoVt4qqua87AJRy5nZwbaCLDs",
             "T7QqSicoC1nB4YRyzWzctWW7KjwiYUtDzVaLwFd4N7W1AUU",
             w,
         )?;
@@ -337,15 +339,16 @@ mod tests {
         let mut client = XrplClient::connect(DEFAULT_SERVER_URL)?;
         let out_dir = std::env::var("OUT_DIR").unwrap();
         let mut jscontext = JavaScript::new(format!("{}/xpring.js", out_dir))?;
-        let w = XWallet::new(
-            "0314ACE51F9B116BCF3C1E38A9BD92706AF4334165870139144E947B27BB0103E8".to_owned(),
-            "009F56FC7B02354C428673EA14854616FED71888270C44911CBD87B84A5A59650F".to_owned(),
-            false,
-        );
+        let w = from_seed(
+            &mut jscontext,
+            "sn3UJSLzAEeAGcrK3nsQTDZW6KT92".to_string(),
+            None,
+            true
+        )?;
         match client.send(
             &mut jscontext,
             12.12,
-            "T7jkn8zYC2NhPdcbVxkiEXZGy56YiEE4P7uXRgpy5j4Q6S1",
+            "T7o8yn1iXP9wC1vgCuCpYYQoVt4qqua87AJRy5nZwbaCLDs",
             "T7QqSicoC1nB4YRyzWzctWW7KjwiYUtDzVaLwFd4N7W1AUU",
             w,
         ) {
@@ -353,6 +356,7 @@ mod tests {
                 assert!(true);
             }
             Err(_error) => {
+                println!("X-_error {}", _error);
                 assert!(false);
             }
         }

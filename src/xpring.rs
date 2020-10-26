@@ -468,15 +468,16 @@ impl Xrpl {
     /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
     /// let sending_wallet =
     ///     xrpl.wallet_from_seed(
-    ///         "shKtxFAYfNUHYayYMYkp3KjQQX2UY", 
+    ///         "sn3UJSLzAEeAGcrK3nsQTDZW6KT92", 
     ///         None
     ///     )?;
     /// let payment = xrpl.send(
     ///     12.12,
-    ///     "T7jkn8zYC2NhPdcbVxkiEXZGy56YiEE4P7uXRgpy5j4Q6S1",
+    ///     "T7o8yn1iXP9wC1vgCuCpYYQoVt4qqua87AJRy5nZwbaCLDs",
     ///     "T7QqSicoC1nB4YRyzWzctWW7KjwiYUtDzVaLwFd4N7W1AUU",
     ///     sending_wallet,
     /// )?;
+    /// 
     /// # Ok(())
     /// # }
     ///
@@ -521,7 +522,7 @@ impl Xrpl {
     /// # fn main() -> Result<(), anyhow::Error> {
     /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
     /// let transaction_status = xrpl.get_transaction_status(
-    ///      "DCDFF1F2A89762CC8209F545D3C950CDCA00262A6A07CCA99C06235198746803",
+    ///      "B171331C9B3D24ACF7ED35F9B6A63090D10048B56C8B187DE6EA71D0AB483086",
     /// )?;
     /// # Ok(())
     /// # }

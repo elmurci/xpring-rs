@@ -133,7 +133,7 @@ mod tests {
 
     use super::*;
 
-    pub const DEFAULT_SERVER_URL: &str = "http://hermes-envoy-test.xpring.io";
+    pub const DEFAULT_SERVER_URL: &str = "http://hermes-grpc.ilpv4.dev";
 
     #[throws(_)]
     #[test]

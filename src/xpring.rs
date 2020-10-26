@@ -1,13 +1,13 @@
 use crate::address::XClassicAddress;
+use crate::ilpclient::{IlpBalanceResponse, IlpClient, IlpSendResponse};
 use crate::javascript::JavaScript;
 use crate::transaction::XTransactionStatus;
 use crate::util;
 use crate::wallet::{self, XWallet, XWalletGenerationResult};
-use crate::xrplclient::{XrplReliableSendResponse, XrplClient};
-use crate::ilpclient::{IlpSendResponse, IlpClient, IlpBalanceResponse};
-use fehler::throws;
-use std::{fs, env};
+use crate::xrplclient::{XrplClient, XrplReliableSendResponse};
 use anyhow::Error;
+use fehler::throws;
+use std::{env, fs};
 
 #[throws(_)]
 fn copy_js_to_exec_path() -> String {
@@ -24,12 +24,11 @@ fn set_vars() {
     env::set_var("NODE_NO_WARNINGS", "1");
 }
 
-
 /// The Xrpl struct will allow you to access all the Xrpl methods
 pub struct Xrpl {
     pub(crate) jscontext: JavaScript,
     pub(crate) xrplclient: XrplClient,
-    pub(crate) test: bool
+    pub(crate) test: bool,
 }
 
 impl Xrpl {
@@ -60,7 +59,7 @@ impl Xrpl {
         Xrpl {
             jscontext: JavaScript::new(xrpljs_path)?,
             xrplclient: XrplClient::connect(xrplclient_url.into())?,
-            test
+            test,
         }
     }
 
@@ -125,7 +124,7 @@ impl Xrpl {
     /// # fn main() -> Result<(), anyhow::Error> {
     /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", true)?;
     /// let wallet_from_mnemonic = xrpl.wallet_from_mnemonic(
-    ///     "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about", 
+    ///     "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
     ///     Some("m/44'/144'/0'/0/1")
     /// )?;
     /// # Ok(())
@@ -148,7 +147,12 @@ impl Xrpl {
         } else {
             None
         };
-        wallet::from_mnemonic(&mut self.jscontext, mnemonic.into(), derivation_path, self.test)?
+        wallet::from_mnemonic(
+            &mut self.jscontext,
+            mnemonic.into(),
+            derivation_path,
+            self.test,
+        )?
     }
 
     /// Generates a wallet from a seed.
@@ -245,8 +249,8 @@ impl Xrpl {
     /// # fn main() -> Result<(), anyhow::Error> {
     /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
     /// let message_verification_result = xrpl.wallet_verify(
-    ///     "mymessage", 
-    ///     "3045022100DD88E31FF9AFD2A6DA48D40C4B4E8F11725E11C9D9E52388710E35ED19212EF6022068CFA9C09071322751C11DD21E89088879DC28B3B683D3F863090FB7C331EC32", 
+    ///     "mymessage",
+    ///     "3045022100DD88E31FF9AFD2A6DA48D40C4B4E8F11725E11C9D9E52388710E35ED19212EF6022068CFA9C09071322751C11DD21E89088879DC28B3B683D3F863090FB7C331EC32",
     ///     "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89"
     /// )?;
     /// # Ok(())
@@ -261,7 +265,12 @@ impl Xrpl {
         signature: S,
         public_key: S,
     ) -> bool {
-        wallet::verify(&mut self.jscontext, message.into(), signature.into(), public_key.into())?
+        wallet::verify(
+            &mut self.jscontext,
+            message.into(),
+            signature.into(),
+            public_key.into(),
+        )?
     }
 
     // Util
@@ -443,7 +452,8 @@ impl Xrpl {
     /// ```
     #[throws(_)]
     pub fn get_balance(&mut self, x_address: &str) -> f32 {
-        self.xrplclient.get_balance(&mut self.jscontext, x_address)?
+        self.xrplclient
+            .get_balance(&mut self.jscontext, x_address)?
     }
 
     /// Sends a payment from one account to another.
@@ -468,7 +478,7 @@ impl Xrpl {
     /// # let mut xrpl =  Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
     /// let sending_wallet =
     ///     xrpl.wallet_from_seed(
-    ///         "sn3UJSLzAEeAGcrK3nsQTDZW6KT92", 
+    ///         "sn3UJSLzAEeAGcrK3nsQTDZW6KT92",
     ///         None
     ///     )?;
     /// let payment = xrpl.send(
@@ -477,7 +487,7 @@ impl Xrpl {
     ///     "T7QqSicoC1nB4YRyzWzctWW7KjwiYUtDzVaLwFd4N7W1AUU",
     ///     sending_wallet,
     /// )?;
-    /// 
+    ///
     /// # Ok(())
     /// # }
     ///
@@ -608,15 +618,13 @@ impl Ilp {
     /// //  }
     /// ```
     #[throws(_)]
-    pub fn send_to<S: Into<String>>(&mut self,
+    pub fn send_to<S: Into<String>>(
+        &mut self,
         destination_payment_pointer: S,
         amount: u64,
-        timeout_seconds: u64
+        timeout_seconds: u64,
     ) -> IlpSendResponse {
-        self.ilpclient.send(
-            destination_payment_pointer.into(),
-            amount,
-            timeout_seconds
-        )?
+        self.ilpclient
+            .send(destination_payment_pointer.into(), amount, timeout_seconds)?
     }
 }

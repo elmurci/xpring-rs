@@ -1,9 +1,9 @@
 use crate::address;
 use crate::address::XClassicAddress;
 use crate::javascript::JavaScript;
+use anyhow::Error;
 use fehler::throws;
 use std::str;
-use anyhow::Error;
 
 // Address
 

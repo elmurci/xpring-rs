@@ -4,7 +4,6 @@ use xpring::Xrpl;
 
 #[throws(_)]
 fn main() {
-
     // Xrpl instance (TestNet)
     let mut xrpl = Xrpl::new("http://test.xrp.xpring.io:50051", false)?;
 
@@ -43,8 +42,7 @@ fn main() {
     println!("\nRandom Wallet {}", random_wallet.wallet.public_key);
 
     // // Generate a Wallet from a seed
-    let wallet_from_seed =
-        xrpl.wallet_from_seed("snYP7oArxKepd3GPDcrjMsJYiJeJB", None)?;
+    let wallet_from_seed = xrpl.wallet_from_seed("snYP7oArxKepd3GPDcrjMsJYiJeJB", None)?;
     println!("\nWallet from seed {:#?}", wallet_from_seed);
 
     // Generate a Wallet from mnemonic
@@ -78,8 +76,7 @@ fn main() {
 
     //Send Payment
     println!("\nSending payment...");
-    let sending_wallet =
-        xrpl.wallet_from_seed("shKtxFAYfNUHYayYMYkp3KjQQX2UY", None)?;
+    let sending_wallet = xrpl.wallet_from_seed("shKtxFAYfNUHYayYMYkp3KjQQX2UY", None)?;
     println!("sending_wallet {:?}", sending_wallet);
     let payment = xrpl.send(
         12.12,

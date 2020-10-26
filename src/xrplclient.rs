@@ -105,11 +105,7 @@ impl XrplClient {
     }
 
     #[throws(_)]
-    pub(crate) fn get_balance(
-        &mut self,
-        jscontext: &mut JavaScript,
-        x_address: &str,
-    ) -> f32 {
+    pub(crate) fn get_balance(&mut self, jscontext: &mut JavaScript, x_address: &str) -> f32 {
         let decoded_address = address::decode_x_address(jscontext, x_address)?;
         let response = self.get_account_info(&decoded_address.address)?;
         if let currency_amount::Amount::XrpAmount(d) =
@@ -317,7 +313,7 @@ mod tests {
             &mut jscontext,
             "sn3UJSLzAEeAGcrK3nsQTDZW6KT92".to_string(),
             None,
-            true
+            true,
         )?;
         let payment = client.send(
             &mut jscontext,
@@ -327,10 +323,11 @@ mod tests {
             w,
         )?;
         thread::sleep(Duration::from_secs(4));
-        let response = client.get_raw_transaction_status(
-            &payment.transaction_hash,
+        let response = client.get_raw_transaction_status(&payment.transaction_hash);
+        assert_eq!(
+            response.unwrap().transaction_result.result.starts_with("t"),
+            true
         );
-        assert_eq!(response.unwrap().transaction_result.result.starts_with("t"), true);
     }
 
     #[throws(_)]
@@ -343,7 +340,7 @@ mod tests {
             &mut jscontext,
             "sn3UJSLzAEeAGcrK3nsQTDZW6KT92".to_string(),
             None,
-            true
+            true,
         )?;
         match client.send(
             &mut jscontext,
